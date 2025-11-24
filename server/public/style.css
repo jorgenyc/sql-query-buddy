@@ -1,0 +1,4431 @@
+/* CSS Variables */
+:root {
+    --drawer-width: 320px; /* Fixed drawer width - matches .settings-drawer.open width */
+}
+
+html {
+    font-size: 13px;
+    /* Base for desktops / laptops */
+}
+
+/* Baseline (desktops / laptops) */
+html {
+    font-size: 12px;
+}
+
+/* Larger screens get a subtle upscale */
+@media (min-width: 1600px) {
+    html {
+        font-size: 13px;
+    }
+}
+
+/* Smaller laptop screens tighten slightly */
+@media (max-width: 1100px) {
+    html {
+        font-size: 11.5px;
+    }
+}
+
+/* Tablet / small screens */
+@media (max-width: 900px) {
+    html {
+        font-size: 11px;
+    }
+}
+
+html,
+body {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+    overflow-y: hidden !important; /* Prevent scrolling - page-wrapper will handle clipping */
+    box-sizing: border-box !important;
+    height: 100vh !important; /* Constrain to viewport */
+    min-height: 100vh !important; /* Force it to be at least the window height */
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-image: url('images/background.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-color: #0a0f18; /* A dark navy/slate color to support the background image */
+    color: #333;
+    display: flex !important; /* Flex container for proper layout */
+    flex-direction: column !important; /* Stack children vertically */
+    min-height: 100vh !important; /* Force it to be at least the window height */
+    height: 100vh !important; /* Constrain to viewport */
+    overflow-x: hidden !important; /* Prevent horizontal scrolling */
+    overflow-y: hidden !important; /* Prevent vertical scrolling - we'll clip overflow instead */
+    position: relative;
+}
+
+.app-header {
+    padding: 0 20px !important; /* Remove vertical padding, keep horizontal */
+    background: rgba(30, 41, 59, 0.50); /* More transparent dark slate for frosted glass */
+    backdrop-filter: blur(12px); /* Frosted glass effect */
+    flex-shrink: 0 !important; /* Prevent header from squishing */
+    border-bottom: 1px solid rgba(148, 163, 184, 0.5); /* Subtle bottom border */
+    position: relative !important; /* Ensure relative positioning for absolute children */
+    margin: 0 !important; /* Remove any default margins */
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1600px;
+    margin: 0 auto !important; /* Remove all margins */
+    padding: 0 !important; /* Remove all padding */
+    /* Removed position: relative to allow dark mode button to position relative to .app-header */
+    width: 100%; /* Ensure full width for absolute positioning context */
+    line-height: 0 !important; /* Prevent inline spacing issues */
+}
+
+/* Position dark mode button relative to app-header, not header-content */
+.app-header .dark-mode-toggle {
+    position: absolute !important;
+    right: 20px !important; /* Pin to right edge of .app-header */
+    top: 50% !important; /* Center vertically relative to header */
+    transform: translateY(-50%) !important; /* Perfect vertical center */
+    margin: 0 !important; /* Remove any margins */
+}
+
+.header-text {
+    text-align: center;
+    flex: 1;
+    margin: 0 !important; /* Remove all margins */
+    padding: 0 !important; /* Remove all padding */
+    line-height: 0 !important; /* Prevent inline spacing from line-height */
+    min-height: 0 !important; /* Remove any min-height constraints */
+}
+
+.dark-mode-toggle {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #ecf0f1;
+    border-radius: 6px;
+    padding: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    position: absolute !important;
+    right: 20px !important; /* Pin to right edge of header */
+    top: 50% !important;
+    transform: translateY(-50%) !important; /* Perfect vertical center */
+    margin: 0 !important;
+    z-index: 10; /* Ensure it's above other content */
+}
+
+.dark-mode-toggle:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+.dark-mode-toggle i {
+    width: 20px;
+    height: 20px;
+    stroke-width: 2;
+}
+
+/* Header logo styling */
+.header-logo {
+    display: block !important; /* Prevent inline spacing */
+    margin: 0 auto !important; /* Center horizontally, no vertical margin */
+    padding: 0 !important; /* Remove all padding */
+    max-width: 450px; /* Reduced logo size */
+    height: auto;
+    line-height: 0 !important; /* Prevent line-height spacing */
+    /* This creates a "vignette" mask */
+    mask-image: radial-gradient(
+        ellipse at center,
+        black 70%,
+        transparent 100%
+    );
+    /* This is a fallback for Safari/older browsers */
+    -webkit-mask-image: radial-gradient(
+        ellipse at center,
+        black 70%,
+        transparent 100%
+    );
+}
+
+
+
+/* Middle Section - The container for Dash/Drawer */
+.main-content {
+    flex: 1 1 auto !important; /* Grow AND Shrink */
+    min-height: 0 !important; /* Crucial for Flexbox scrolling */
+    overflow-y: hidden !important; /* Prevent scrolling on main-content - let children scroll */
+    overflow-x: hidden !important; /* Prevent horizontal scrolling */
+    display: flex !important; /* To manage internal layout */
+    flex-direction: row; /* Horizontal layout for Query Hub and Drawer */
+    height: 100% !important; /* Fill the parent flex container */
+    position: relative; /* establishes a generic anchor point */
+    gap: 12px;
+    padding: 10px 16px;
+    padding-bottom: 0 !important; /* Remove bottom padding to touch footer */
+    /* reduce excess right padding */
+    width: 100%;
+    max-width: 100%;
+    /* was 1600px */
+    margin: 0 auto;
+    margin-bottom: 0; /* Remove margin-bottom - flexbox handles spacing */
+    box-sizing: border-box;
+    flex-wrap: nowrap;
+}
+
+/* Footer spacing is now handled by flexbox - no need for margin adjustments */
+
+/* Remove max-height constraints - let flexbox handle sizing */
+/* Footer state-specific container rules removed - flexbox handles sizing automatically */
+
+
+.container {
+    /* Glassmorphism theme */
+    background: rgba(30, 41, 59, 0.75);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(148, 163, 184, 0.5);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    box-sizing: border-box;
+    margin-bottom: 0 !important; /* Ensure no gap at bottom */
+    margin-left: 0;
+    margin-right: 50px; /* Add space for AI Settings button (reduced by 50%) */
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: 0; /* Allow container to shrink */
+    flex-grow: 1 !important; /* Grow to fill the vertical space */
+    height: 100% !important; /* Fill the parent flex container */
+    min-width: 380px;
+    max-width: calc(100% - 50px); /* Adjust max-width to account for margin */
+    width: calc(100% - 50px); /* Adjust width to account for margin */
+    overflow: hidden;
+    align-self: stretch; /* Stretch to fill parent height */
+    /* Use flex-based sizing that responds to footer state */
+}
+
+/* Container for the settings drawer */
+.settings-drawer {
+    position: absolute; /* Stick to the 'main-content' container, not the window */
+    top: 0 !important;
+    bottom: 0 !important;
+    right: 0 !important;
+    height: 100% !important; /* Fill the middle section exactly */
+    width: 0;
+    /* Hidden by default */
+    overflow: hidden;
+    /* Frosted glass effect */
+    background: rgba(30, 41, 59, 0.75);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(148, 163, 184, 0.5);
+    border-radius: 12px;
+    box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
+    transition: width 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+    opacity: 0;
+    visibility: hidden;
+    z-index: 999; /* Below button but above other content */
+}
+
+/* When open */
+.settings-drawer.open {
+    width: var(--drawer-width) !important; /* Use CSS variable for consistent width */
+    max-height: none; /* Remove max-height constraint */
+    overflow-y: auto;
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Drawer automatically resizes with footer via flexbox - no need for footer-specific bottom values */
+
+/* Adjust container margin when drawer is open to maintain consistent spacing */
+.main-content.drawer-open {
+    gap: 12px; /* Small gap between container and drawer */
+}
+
+.main-content.drawer-open .container {
+    /* Drawer is fixed, so container can use full width minus drawer and gap */
+    margin-right: 0; /* Remove right margin when drawer is open */
+    max-width: calc(100% - 332px); /* Account for drawer (320px) + gap (12px) */
+    width: calc(100% - 332px);
+    flex: 0 1 auto; /* Allow container to shrink but don't force it to grow */
+}
+
+
+
+
+/* App Container - The parent of Header, Main, Footer */
+/* Ensure page-wrapper has no top margin/padding that could create space above header */
+.page-wrapper {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: 111.11vh !important; /* Compensate for 0.9 scale: 100vh / 0.9 = 111.11vh */
+    height: 111.11vh !important; /* When scaled to 0.9, this becomes 100vh visually */
+    margin: 0 !important;
+    overflow: hidden !important; /* Stop the window itself from scrolling */
+    transform: scale(0.9);
+    transform-origin: top left;
+    width: 111.11vw; /* Compensate for 0.9 scale: 100vw / 0.9 = 111.11vw */
+    flex-grow: 1 !important; /* Take up all available space in body */
+}
+
+
+
+
+
+
+/* CLOSED STATE - Pin it flush to the right */
+.drawer-toggle {
+    position: fixed !important; /* Pin to viewport */
+    top: 100px; /* Default vertical position - will be adjusted by JavaScript */
+    right: 0 !important; /* Pin to far right edge of screen when closed */
+    margin-right: 0 !important; /* Remove any default margins */
+    padding-right: 0 !important; /* Remove padding if present */
+    margin: 0; /* Remove any default margins */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end; /* Align to right edge */
+    justify-content: center;
+    background: transparent; /* Remove purple gradient - let image show through */
+    color: white;
+    font-weight: 500;
+    border-radius: 0;
+    padding: 0; /* Remove padding to let image control its own size */
+    cursor: pointer;
+    box-shadow: none; /* Remove shadow - image may have its own */
+    transition: right 0.3s ease, transform 0.3s ease; /* Add transform to transition */
+    min-width: auto;
+    width: auto;
+    border: none; /* Remove any default border */
+    z-index: 3000 !important; /* Ensure it sits above other content */
+    transform: translateX(10px) !important; /* Shift button right to eliminate gap (use positive value: 5px to 15px) */
+}
+
+/* OPEN STATE - Attach it to the drawer */
+.drawer-toggle.drawer-open {
+    right: var(--drawer-width) !important;
+    margin-right: -37px !important; /* Overlap by full button width to eliminate gap */
+    transform: translateX(0) !important; /* Reset transform when drawer is open */
+}
+
+.drawer-toggle:hover {
+    background: transparent; /* Keep transparent on hover */
+    transform: translateX(13px) !important; /* Shift 3px more right on hover (from 10px base) */
+    opacity: 0.85; /* Slight fade on hover instead of background change */
+}
+
+/* Disable hover effects when drawer is open */
+.settings-drawer.open ~ .drawer-toggle:hover,
+.drawer-toggle.no-hover:hover {
+    transform: translateX(0) !important; /* Reset to open state transform */
+    opacity: 1;
+}
+
+.drawer-toggle:disabled,
+.drawer-toggle.disabled {
+    background: transparent; /* Keep transparent when disabled */
+    cursor: not-allowed;
+    opacity: 0.5;
+    display: flex !important; /* Ensure button stays visible when disabled */
+}
+
+.drawer-toggle:disabled:hover,
+.drawer-toggle.disabled:hover {
+    background: transparent; /* Keep transparent */
+    transform: none;
+    opacity: 0.5;
+}
+
+.drawer-toggle-text {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-size: 0.75rem;
+    white-space: nowrap;
+    letter-spacing: 1px; /* Increased from 0.5px to 1px for better readability */
+    line-height: 1.2;
+    font-weight: normal; /* Override the 500 weight from parent to make it lighter */
+}
+
+.drawer-toggle-arrow {
+    font-size: 0.9rem;
+    line-height: 1;
+    margin-top: 8px;
+    display: block;
+}
+
+/* Remove whitespace from button image */
+.drawer-toggle img,
+.drawer-toggle-icon {
+    display: block !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 80px !important; /* Set explicit width */
+    height: 80px !important; /* Set explicit height */
+    max-width: 80px; /* Adjust based on your image size */
+    max-height: 80px; /* Adjust based on your image size */
+    min-width: 80px; /* Ensure minimum size */
+    min-height: 80px; /* Ensure minimum size */
+    object-fit: contain;
+    pointer-events: none; /* Ensure clicks go to button, not image */
+    opacity: 1 !important; /* Ensure it's visible */
+    visibility: visible !important; /* Ensure it's visible */
+    background: transparent; /* Ensure no background */
+}
+
+.collapse-btn {
+    background: transparent; /* Remove purple gradient background */
+    color: white;
+    border: 1px solid #5a6fa8; /* Smaller border */
+    border-radius: 4px;
+    cursor: pointer;
+    padding: 2px 4px; /* Reduced padding to shrink border closer to graphic */
+    font-size: 1rem;
+    margin: 0; /* Remove margin */
+    position: relative; /* Changed from absolute to relative for flex layout */
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease, opacity 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+    flex-shrink: 0; /* Prevent button from shrinking */
+}
+
+.collapse-btn:hover {
+    background: rgba(52, 152, 219, 0.4);
+    border-color: #5dade2;
+    transform: scale(1.1);
+}
+
+.collapse-btn-icon {
+    width: 23px; /* Increased by 15% from 20px (20px * 1.15 = 23px) */
+    height: 23px; /* Increased by 15% from 20px (20px * 1.15 = 23px) */
+    object-fit: contain;
+    display: block;
+}
+
+.settings-drawer:not(.open) .collapse-btn {
+    display: none;
+}
+
+#chat-container {
+    flex-grow: 1 !important; /* Push the input box to the bottom */
+    min-height: 0 !important; /* Allow shrinking if footer gets huge */
+    overflow-y: auto !important; /* Scroll INSIDE this box if needed */
+    border: 1px solid rgba(148, 163, 184, 0.3);
+    border-radius: 6px;
+    padding: 10px;
+    margin-bottom: 12px;
+    background: rgba(15, 23, 42, 0.5); /* Dark semi-transparent background */
+    display: flex;
+    flex-direction: column;
+    color: #e2e8f0; /* Light text color for frosted glass theme */
+}
+
+#chat-container.empty {
+    min-height: 0; /* Remove fixed min-height - let flexbox handle sizing */
+}
+
+
+.main-container {
+    flex: 1; /* Take available space, allow shrinking */
+    margin-bottom: 0;
+    padding-bottom: 0;
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: 0; /* Allow container to shrink */
+    height: 100% !important; /* Fill the parent flex container */
+}
+
+header {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    margin-bottom: 0;
+    /* 8px spacing system */
+    border-bottom: 1px solid #eee;
+    padding: 8px 0 2px 0;
+    gap: 16px;
+    /* 8px * 2 */
+    min-height: 100px !important; /* Fixed height to prevent layout shift when switching tabs */
+    height: auto !important; /* Allow expansion if needed */
+}
+
+.header-center {
+    flex: 1;
+    display: flex !important;
+    justify-content: space-between !important; /* Pushes items to edges */
+    align-items: flex-start !important; /* Align to top */
+    width: 100%;
+    padding-right: 60px !important; /* Vital: Add space so text doesn't hit the Gear Icon */
+    gap: 20px; /* Space between left and right sections */
+}
+
+/* Left controls container */
+.left-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    flex-shrink: 0;
+    margin-bottom: 12px !important; /* Fixed margin to prevent overlap with tab bar */
+    padding-bottom: 4px !important; /* Additional padding for safety */
+    position: relative;
+    min-height: 60px !important; /* Stabilize height to prevent layout shift */
+}
+
+/* Right side title area */
+.header-title-area {
+    text-align: right; /* Right-align the text itself */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-end; /* Align items to the right */
+    flex-shrink: 0;
+}
+
+/* Remove old absolute positioning from h1 and p */
+header h1 {
+    color: #e2e8f0; /* Light color for glassmorphism theme */
+    margin: 0;
+    font-size: 1.2rem; /* Slightly reduced from 1.3rem */
+    text-align: right; /* Right-align instead of center */
+    position: static; /* Remove absolute positioning */
+    transform: none; /* Remove centering transform */
+    width: auto; /* Remove full width */
+    flex: none; /* Remove flex: 1 */
+}
+
+header p {
+    color: #94a3b8; /* Muted gray */
+    font-size: 0.85rem;
+    margin: 5px 0 0 0; /* Top margin for spacing */
+    text-align: right; /* Right-align instead of center */
+    position: static; /* Remove absolute positioning */
+    transform: none; /* Remove centering transform */
+    width: auto; /* Remove full width */
+    flex: none;
+}
+
+/* Keep old classes for backward compatibility but update positioning */
+.header-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* Changed from space-between */
+    gap: 15px;
+    margin-bottom: 0;
+    align-self: flex-start;
+    position: static; /* Changed from relative */
+}
+
+.provider-subtitle-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start; /* Changed from space-between */
+    gap: 30px;
+    margin: 8px 0 0 0;
+    padding: 0 0 0 0;
+    position: static; /* Changed from relative */
+}
+
+/* Adjust provider model row to work in left-controls */
+.left-controls .provider-model-row {
+    margin-bottom: 0; /* Remove bottom margin since parent has margin-bottom */
+}
+
+/* HUD Style Provider/Model Info Container */
+.provider-model-row {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 4px;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 2;
+    font-family: 'Courier New', monospace; /* Tech font */
+    font-size: 0.85rem;
+    margin-bottom: 0 !important; /* Remove margin since parent handles spacing */
+    padding-bottom: 0 !important; /* Remove padding */
+}
+
+.provider-model-item {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* Space between items */
+}
+
+/* HUD Style Labels (e.g., "PROVIDER:") */
+.provider-model-label {
+    color: #94a3b8 !important; /* Muted Slate Gray */
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-right: 5px;
+    font-size: 0.85rem;
+}
+
+/* HUD Style Values (e.g., "openai") */
+.provider-model-value {
+    color: #38bdf8 !important; /* Bright Cyan/Blue (Matches Footer) */
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-shadow: 0 0 5px rgba(56, 189, 248, 0.4); /* Subtle glow */
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+/* Dark mode overrides for HUD style */
+body.dark-mode .provider-model-label {
+    color: #94a3b8 !important; /* Keep muted slate gray */
+}
+
+body.dark-mode .provider-model-value {
+    color: #38bdf8 !important; /* Keep bright cyan with glow */
+    text-shadow: 0 0 5px rgba(56, 189, 248, 0.4) !important;
+}
+
+.templates-btn-left {
+    padding: 4px 10px;
+    background: transparent !important; /* Ghost style */
+    border: 1px solid rgba(148, 163, 184, 0.5) !important;
+    color: #e2e8f0 !important;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 10; /* Ensure button is clickable above other elements */
+    pointer-events: auto; /* Ensure clicks are registered */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.templates-btn-left:hover:not(.disabled):not([disabled]) {
+    border-color: #38bdf8 !important; /* Cyan glow on hover */
+    box-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
+    color: #38bdf8 !important;
+}
+
+.templates-btn-left.disabled,
+.templates-btn-left[disabled] {
+    opacity: 0.5 !important;
+    cursor: not-allowed !important;
+    pointer-events: none !important;
+}
+
+.templates-btn-left i {
+    width: 14px;
+    height: 14px;
+}
+
+/* Dark mode uses same ghost style */
+body.dark-mode .templates-btn-left {
+    background: transparent !important;
+    border-color: rgba(148, 163, 184, 0.5) !important;
+    color: #e2e8f0 !important;
+}
+
+body.dark-mode .templates-btn-left:hover {
+    border-color: #38bdf8 !important;
+    box-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
+    color: #38bdf8 !important;
+}
+
+.tabs-and-button-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: 0;
+    position: relative;
+    z-index: 1;
+    margin-top: 0 !important; /* Remove top margin to prevent pulling up into text */
+    margin-bottom: 10px !important; /* Consistent bottom margin */
+    border-bottom: 2px solid #e0e0e0; /* Added from removed duplicate */
+    flex-shrink: 0 !important; /* Prevent tabs from being squished */
+    min-height: 45px !important; /* Guarantee a minimum clickable height */
+}
+
+.compare-mode-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background-color: #4a90e2;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: background-color 0.2s ease;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.compare-mode-btn:hover {
+    background-color: #357abd;
+}
+
+.compare-mode-btn i {
+    width: 16px;
+    height: 16px;
+}
+
+.query-tabs {
+    display: flex;
+    gap: 4px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: 0;
+    flex: 1;
+    min-width: 0;
+    flex-shrink: 0 !important; /* Prevent tabs from being squished */
+    min-height: 45px !important; /* Guarantee a minimum clickable height */
+}
+
+/* Base Style - All tabs share this structure */
+.tab {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 20px;
+    border-radius: 8px 8px 0 0; /* Rounded top corners only - looks more like a folder tab */
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+    border-bottom: none;
+    margin-right: 4px; /* Space between tabs */
+    position: relative;
+    min-width: 80px;
+    max-width: 180px;
+    font-size: 0.85rem;
+}
+
+.tab.hidden-tab {
+    display: none !important;
+}
+
+.tab.disabled,
+.tab[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed !important;
+    pointer-events: none; /* Prevent clicking */
+}
+
+/* Inactive State - Dark glass that recedes into background */
+.tab:not(.active) {
+    background: rgba(30, 41, 59, 0.4); /* Dark, see-through */
+    color: #94a3b8; /* Muted gray text */
+    border: 1px solid rgba(148, 163, 184, 0.1);
+    border-bottom: none;
+}
+
+/* Hover effect for inactive tabs */
+.tab:not(.active):hover:not(.disabled):not([disabled]) {
+    background: rgba(56, 189, 248, 0.1); /* Slight blue tint */
+    color: #e2e8f0; /* Brighter text */
+    border-color: rgba(56, 189, 248, 0.3);
+}
+
+/* Active State - Metallic/Neon Gradient with Glow */
+.tab.active {
+    /* The Metallic/Neon Gradient */
+    background: linear-gradient(180deg, #38bdf8 0%, #2563eb 100%);
+    color: white;
+    border: 1px solid #38bdf8; /* Bright highlight border */
+    border-bottom: none;
+    box-shadow: 0 0 15px rgba(56, 189, 248, 0.4); /* The "Glow" */
+    z-index: 10; /* Ensure it sits on top of the border line below it */
+    font-weight: 600;
+}
+
+.tab-close {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    font-size: 0.5rem;
+    cursor: pointer;
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    padding: 1px 2px;
+    border-radius: 2px;
+    transition: all 0.2s ease;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.8;
+    z-index: 10;
+    width: 14px;
+    height: 14px;
+}
+
+/* Close button on active tab */
+.tab.active .tab-close {
+    background: rgba(255, 255, 255, 0.25);
+    color: white;
+}
+
+/* Close button on inactive tab */
+.tab:not(.active) .tab-close {
+    background: rgba(148, 163, 184, 0.3);
+    color: #94a3b8;
+}
+
+.tab-close:hover {
+    background: rgba(255, 255, 255, 0.4) !important;
+    opacity: 1;
+    color: white !important;
+}
+
+.tab-close i {
+    width: 8px;
+    height: 8px;
+    stroke-width: 2;
+}
+
+.tab.no-close .tab-close {
+    display: none;
+}
+
+.tab-close:hover {
+    color: #f0f0f0;
+    /* Slightly darker white on hover */
+}
+
+
+/* Prevent inactive tabs from appearing taller than active tab */
+.query-tabs .tab {
+    border-bottom: none;
+    /* Height will be determined by padding in base .tab style */
+    display: flex;
+    align-items: center;
+}
+
+/* Active tab - remove old border-bottom, use glow instead */
+.query-tabs .tab.active {
+    border-bottom: none; /* Remove old border-bottom style */
+    /* Height and styling handled by base .tab.active */
+}
+
+
+.chat-message {
+    margin-bottom: 12px;
+    padding: 10px 15px;
+    border-radius: 18px;
+    max-width: 80%;
+    word-wrap: break-word;
+    line-height: 1.4;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    font-size: 0.95rem;
+}
+
+.user-message {
+    background-color: #1e293b; /* Dark slate blue */
+    color: #e2e8f0;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    margin-left: auto; /* Align user's bubble to the right */
+    align-self: flex-end;
+    font-size: 1.1rem !important; /* Increased from 0.95rem for better readability */
+}
+
+.ai-message {
+    background: rgba(15, 23, 42, 0.5); /* Dark, transparent glass */
+    color: #e2e8f0;
+    border: 1px solid rgba(148, 163, 184, 0.3); /* Light border */
+    border-radius: 8px;
+    margin-right: auto; /* Align bot's bubble to the left */
+    align-self: flex-start;
+}
+
+.message-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 12px;
+    align-items: flex-start;
+    width: 100%;
+}
+
+/* ============================================
+   TRON HUD STATS BAR - Horizontal Stats Display
+   ============================================ */
+
+/* The Container Strip */
+.query-stats-bar {
+    display: flex !important;
+    flex-wrap: wrap !important; /* Allow wrapping on small screens */
+    justify-content: space-between !important; /* Spread items out */
+    align-items: center !important;
+    background: rgba(15, 23, 42, 0.8) !important; /* Dark Glass */
+    backdrop-filter: blur(10px) !important;
+    border: 1px solid rgba(56, 189, 248, 0.3) !important; /* Cyan Border */
+    border-radius: 8px !important; /* Capsule shape */
+    padding: 10px 20px !important;
+    margin-top: 15px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    font-family: 'Roboto Mono', monospace !important;
+}
+
+/* The Individual Data Points */
+.stat-item {
+    display: flex !important;
+    flex-direction: column !important; /* Label on top of value */
+    align-items: flex-start !important;
+    font-family: 'Roboto Mono', monospace !important;
+    font-size: 0.75rem !important;
+    padding: 0 10px !important;
+    border-right: 1px solid rgba(148, 163, 184, 0.2) !important; /* Separator lines */
+    flex: 1 1 auto !important;
+    min-width: 80px !important;
+}
+
+.stat-item:last-child {
+    border-right: none !important;
+}
+
+/* Labels */
+.stat-label {
+    color: #94a3b8 !important; /* Muted Grey */
+    text-transform: uppercase !important;
+    font-size: 0.65rem !important;
+    margin-bottom: 2px !important;
+    letter-spacing: 0.5px !important;
+    font-weight: 500 !important;
+}
+
+/* Values */
+.stat-value {
+    color: #38bdf8 !important; /* Cyan Neon */
+    font-weight: 600 !important;
+    font-size: 0.85rem !important;
+}
+
+/* Hide Time and Iteration on smaller screens */
+@media (max-width: 1200px) {
+    .stat-item-time,
+    .stat-item-iteration {
+        display: none !important;
+    }
+}
+
+/* Stack into two rows on very small screens */
+@media (max-width: 768px) {
+    .query-stats-bar {
+        flex-direction: column !important;
+        align-items: stretch !important;
+    }
+    
+    .stat-item {
+        flex-direction: row !important;
+        justify-content: space-between !important;
+        border-right: none !important;
+        border-bottom: 1px solid rgba(148, 163, 184, 0.2) !important;
+        padding: 8px 10px !important;
+    }
+    
+    .stat-item:last-child {
+        border-bottom: none !important;
+    }
+}
+
+/* Dark mode adjustments */
+body.dark-mode .query-stats-bar {
+    background: rgba(15, 23, 42, 0.9) !important;
+    border-color: rgba(56, 189, 248, 0.4) !important;
+}
+
+body.dark-mode .stat-label {
+    color: #94a3b8 !important;
+}
+
+body.dark-mode .stat-value {
+    color: #38bdf8 !important;
+}
+
+/* ============================================
+   OLD VERTICAL STATS CARD - REMOVED
+   ============================================ */
+/* 
+.stats-message {
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 8px 16px;
+    background: transparent;
+    border: 1px solid #334155;
+    color: #94a3b8;
+    border-radius: 8px;
+    text-align: center;
+    flex-shrink: 0;
+    min-width: 250px;
+    max-width: 300px;
+    box-sizing: border-box;
+    display: block;
+    visibility: visible;
+    font-size: 1.05rem !important;
+}
+
+.stats-bubble-content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.stats-bubble-content h4 {
+    margin: 0 0 8px 0;
+    font-size: 1.2rem !important;
+    font-weight: 600;
+    color: #94a3b8;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.3);
+    padding-bottom: 6px;
+}
+
+.stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    font-size: 1rem !important;
+}
+*/
+
+form#query-form {
+    display: flex;
+    width: 100%;
+    margin-top: 8px;
+    margin-bottom: 0;
+    padding-bottom: 0px;
+    border-top: 3px solid #007bff;
+    padding: 10px;
+    background: transparent; /* Dark theme: transparent to show page background */
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 123, 255, 0.1);
+    box-sizing: border-box;
+}
+
+#query-input {
+    width: 100%;
+    flex: 1;
+    padding: 10px 12px;
+    border: none; /* Removes any default borders */
+    border-bottom: 1px solid #94a3b8; /* Adds the clean underline */
+    border-radius: 0; /* Removes any rounded corners from the old style */
+    margin-right: 8px;
+    /* High-tech terminal typography */
+    font-size: 16px !important; /* Increased size for readability */
+    font-family: 'Roboto Mono', 'Fira Code', 'Courier New', monospace !important; /* Tech-inspired font */
+    letter-spacing: 0.5px; /* Slight spacing makes it look cleaner */
+    line-height: 1.5;
+    resize: none;
+    background: transparent !important; /* This removes the white box */
+    color: #e2e8f0 !important; /* This makes the text you type white */
+    max-height: 85px;
+    overflow-y: auto;
+    box-sizing: border-box;
+}
+
+form#query-form button {
+    /* Submit button with glow effect */
+    background-color: #007bff; /* Blue background */
+    color: white; /* White text */
+    border: none;
+    border-radius: 25px;
+    box-shadow: 0 0 12px rgba(59, 130, 246, 0.5); /* Blue glow effect */
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+    min-width: 100px;
+    white-space: nowrap;
+    font-weight: 500;
+}
+
+form#query-form button:hover {
+    background-color: #0056b3;
+}
+
+form#query-form button:disabled {
+    background-color: #6c757d;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.query-footer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    background-color: #fef3e7;
+    border-radius: 6px 6px 0 0;
+    box-shadow: 0 1px 3px rgba(217, 119, 6, 0.08);
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+.reset-message {
+    background: rgba(15, 23, 42, 0.5); /* Dark, transparent glass */
+    border: 1px solid rgba(148, 163, 184, 0.3); /* Light border */
+    color: #00e0ff; /* Light cyan that matches the theme */
+    border-radius: 8px;
+    text-align: left;
+    padding: 12px;
+    padding-left: 20px; /* Add left padding so text doesn't touch the edge */
+    margin: 10px 0; /* Remove auto centering */
+    width: 100%; /* Span full container width */
+    font-size: 1.1em; /* Increased font size for better readability */
+    transition: opacity 0.3s ease;
+}
+
+.hidden {
+    display: none !important;
+}
+
+
+
+.form-group {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.form-group select {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 0.95rem;
+    flex-grow: 1;
+    max-width: 250px;
+    background-color: #fff;
+    cursor: pointer;
+}
+
+.form-group button {
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 15px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: background-color 0.3s ease;
+}
+
+#ai-provider-status {
+    padding: 12px 0; /* Remove horizontal padding to eliminate whitespace */
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* Fill the drawer's available height */
+    position: relative; /* Allow absolute positioning of collapse button */
+    box-sizing: border-box;
+    overflow-y: auto; /* Allow scrolling if content exceeds height */
+}
+
+.provider-header-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    margin-top: 0;
+    padding-left: 12px; /* Add left padding to match drawer padding */
+    padding-right: 12px; /* Add right padding to match drawer padding */
+}
+
+.provider-instruction {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #e2e8f0; /* Light color for glassmorphism theme */
+    text-align: left;
+    line-height: 1.4;
+    flex: 1;
+}
+
+.clear-button {
+    /* Changed from red/orange to secondary style */
+    background-color: transparent;
+    color: #6c757d;
+    border: 1px solid #6c757d;
+    border-radius: 4px;
+    padding: 8px 18px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    font-weight: 500;
+}
+
+.clear-button:hover {
+    background-color: #f8f9fa;
+    border-color: #5a6268;
+    color: #5a6268;
+}
+
+.app-footer {
+    /* Match the API Drawer & Header Theme - Frosted Glass */
+    background: rgba(15, 23, 42, 0.90) !important; /* Dark, semi-transparent */
+    backdrop-filter: blur(12px) !important;
+    border-top: 1px solid rgba(148, 163, 184, 0.3) !important;
+    color: #e2e8f0 !important; /* Ensure text is light */
+    margin-top: auto !important; /* A flexbox trick to push it down */
+    flex-shrink: 0 !important; /* Prevent it from squishing */
+    width: 100% !important;
+    box-sizing: border-box;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+/* Expanded footer - Cyber/Glass Theme */
+.app-footer:not(.footer-minimized) {
+    /* Dark, semi-transparent background with stronger blur */
+    background: rgba(15, 23, 42, 0.85) !important;
+    backdrop-filter: blur(16px) !important;
+    
+    /* Neon Gradient Top Border using box-shadow */
+    border-top: none !important;
+    box-shadow: 0 -1px 0 0 transparent, 
+                0 -2px 0 0 transparent,
+                inset 0 2px 0 0 rgba(0, 224, 255, 0.3),
+                0 -4px 20px rgba(0, 0, 0, 0.1) !important;
+    position: relative;
+    
+    color: #e2e8f0 !important; /* Light text */
+    max-height: 50vh !important; /* Never take more than half the screen */
+    overflow-y: auto !important; /* Scroll inside footer if content is huge */
+}
+
+/* Neon Gradient Top Border using pseudo-element */
+.app-footer:not(.footer-minimized)::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #00e0ff, #7000ff);
+    z-index: 1;
+}
+
+.app-footer.footer-minimized {
+    padding: 0;
+    max-height: none !important; /* Remove max-height constraint when minimized */
+    overflow-y: visible !important; /* Allow normal flow when minimized */
+}
+
+/* Footer links styling */
+.app-footer a {
+    color: #38bdf8 !important; /* Cyan/Blue for links */
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.app-footer a:hover {
+    color: #60a5fa !important; /* Lighter blue on hover */
+    text-decoration: underline;
+}
+
+.footer-toggle-btn {
+    position: absolute;
+    top: 8px; /* Top of footer when expanded - small gap from top */
+    left: 8px; /* Match the top gap - same distance from left edge */
+    background: rgba(52, 152, 219, 0.2);
+    border: 2px solid #3498db;
+    border-radius: 6px;
+    color: #ecf0f1;
+    cursor: pointer;
+    padding: 4px; /* Reduced by 50% from 8px (8px * 0.5 = 4px) */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s ease, border-color 0.3s ease; /* Only transition visual properties, not position/transform */
+    z-index: 10;
+    width: 28px; /* Adjusted to accommodate reduced padding: 18px icon + 4px padding * 2 + 2px border = 28px */
+    height: 28px; /* Adjusted to accommodate reduced padding: 18px icon + 4px padding * 2 + 2px border = 28px */
+    transform: translateY(0); /* Default transform for expanded state */
+}
+
+.app-footer.footer-minimized .footer-toggle-btn {
+    top: 50%; /* Center vertically in minimized footer - instant change, no transition */
+    transform: translateY(-50%); /* Center vertically - instant change, no transition */
+    bottom: auto; /* Override bottom positioning */
+    left: 8px; /* Left-justified to footer edge (not container) */
+}
+
+.footer-toggle-btn:hover {
+    background: rgba(52, 152, 219, 0.4);
+    border-color: #5dade2;
+    transform: translateY(0) scale(1.1); /* Explicit transform for expanded state hover */
+}
+
+.app-footer.footer-minimized .footer-toggle-btn:hover {
+    transform: translateY(-50%) scale(1.1); /* Combine centering with scale on hover */
+}
+
+.footer-toggle-icon-img {
+    width: 18px; /* Reduced by 10% from 20px (20px * 0.9 = 18px) */
+    height: 18px; /* Reduced by 10% from 20px (20px * 0.9 = 18px) */
+    object-fit: contain;
+    opacity: 0.7; /* Slightly transparent for modern professional UI */
+    transition: opacity 0.3s ease;
+}
+
+.footer-toggle-btn:hover .footer-toggle-icon-img {
+    opacity: 1; /* Full opacity on hover */
+}
+
+.footer-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0;
+    /* Removed position: relative so button positions relative to .app-footer */
+}
+
+.footer-main {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 30px;
+    padding: 25px 30px 15px;
+    padding-left: 50px; /* Add left padding to make room for toggle button */
+    transition: all 0.3s ease;
+}
+
+/* Increase column spacing for expanded footer */
+.app-footer:not(.footer-minimized) .footer-main {
+    gap: 4rem !important; /* Significantly increase space (approx 64px) */
+}
+
+.app-footer.footer-minimized .footer-main {
+    display: none;
+}
+
+.footer-section {
+    display: flex;
+    flex-direction: column;
+}
+
+.footer-brand .footer-logo {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #3498db;
+    margin: 0 0 8px 0;
+    letter-spacing: -0.5px;
+}
+
+/* Cyber Theme - Neon Headers for Expanded Footer */
+.app-footer:not(.footer-minimized) .footer-logo,
+.app-footer:not(.footer-minimized) .footer-heading {
+    color: #00e0ff !important; /* Cyan */
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.95rem;
+    margin-bottom: 15px;
+    border-bottom: 1px solid rgba(0, 224, 255, 0.2) !important; /* Subtle underline */
+    padding-bottom: 5px;
+    display: inline-block;
+}
+
+.footer-tagline {
+    font-size: 0.95rem;
+    color: #bdc3c7;
+    margin: 0 0 12px 0;
+    font-weight: 500;
+    font-style: italic;
+}
+
+.footer-description {
+    font-size: 0.88rem;
+    line-height: 1.5;
+    color: #95a5a6;
+}
+
+/* Format description text for expanded footer */
+.app-footer:not(.footer-minimized) .footer-description {
+    line-height: 1.7 !important; /* More breathing room between lines */
+    font-size: 0.9rem !important; /* Slightly smaller than body text */
+    color: #cbd5e1 !important; /* Soft light gray (not stark white) */
+    margin-bottom: 15px !important;
+    max-width: 90% !important; /* Prevent lines from being too long */
+}
+
+.footer-description {
+    margin: 0;
+}
+
+.footer-tech .footer-heading {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #3498db;
+    margin: 0 0 15px 0;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #3498db;
+}
+
+/* Override for expanded footer - handled by .app-footer:not(.footer-minimized) .footer-heading */
+.app-footer:not(.footer-minimized) .footer-tech .footer-heading,
+.app-footer:not(.footer-minimized) .footer-links .footer-heading,
+.app-footer:not(.footer-minimized) .footer-connect .footer-heading {
+    border-bottom: 1px solid rgba(0, 224, 255, 0.2) !important;
+}
+
+.footer-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-list li {
+    padding: 6px 0;
+    font-size: 0.88rem;
+    color: #bdc3c7;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+/* Polish "Built With" list for expanded footer - Condensed */
+.app-footer:not(.footer-minimized) .footer-list li {
+    margin-bottom: 0 !important; /* Remove margin - padding handles spacing */
+    display: flex !important;
+    align-items: center !important; /* Vertically center icons with text */
+}
+
+/* Only apply margin-bottom to tech list items, not all footer lists */
+.app-footer:not(.footer-minimized) .footer-tech-list li {
+    margin-bottom: 0 !important; /* Grid gap handles spacing */
+}
+
+/* Tech links styling */
+.footer-tech-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px 16px; /* row gap, column gap */
+}
+
+/* Condensed spacing for expanded footer */
+.app-footer:not(.footer-minimized) .footer-tech-list {
+    gap: 4px 16px !important; /* Reduce row gap from 8px to 4px */
+}
+
+.footer-tech-list li {
+    padding: 8px 0;
+}
+
+/* Condensed padding for expanded footer */
+.app-footer:not(.footer-minimized) .footer-tech-list li {
+    padding: 4px 0 !important; /* Reduce from 8px to 4px */
+}
+
+.tech-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #bdc3c7;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+/* Condensed tech links for expanded footer */
+.app-footer:not(.footer-minimized) .tech-link {
+    padding: 2px 6px !important; /* Reduce padding from 4px 8px */
+    font-size: 0.85rem !important; /* Slightly smaller font */
+}
+
+.tech-link:hover {
+    color: #3498db;
+    background-color: rgba(52, 152, 219, 0.1);
+    transform: translateX(4px);
+}
+
+.tech-link .tech-icon {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+    transition: all 0.3s ease;
+}
+
+/* Condensed icons for expanded footer */
+.app-footer:not(.footer-minimized) .tech-link .tech-icon {
+    width: 18px !important; /* Reduce from 20px to 18px */
+    height: 18px !important;
+}
+
+.tech-link:hover .tech-icon {
+    transform: scale(1.1);
+    fill: #3498db;
+}
+
+.tech-link span {
+    transition: color 0.3s ease;
+}
+
+
+
+.footer-links .footer-heading {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #3498db;
+    margin: 0 0 15px 0;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #3498db;
+}
+
+.footer-links a {
+    color: #bdc3c7;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-size: 0.88rem;
+    position: relative;
+    display: inline-block;
+}
+
+.footer-connect .footer-heading {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #3498db;
+    margin: 0 0 15px 0;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #3498db;
+}
+
+.footer-social-links {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.social-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    background-color: rgba(52, 152, 219, 0.1);
+    border: 2px solid #3498db;
+    border-radius: 8px;
+    color: #ecf0f1;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-size: 0.88rem;
+    font-weight: 500;
+}
+
+/* Cyber Theme - Ghost Style Social Buttons for Expanded Footer */
+.app-footer:not(.footer-minimized) .social-link {
+    background: transparent !important;
+    border: 1px solid #38bdf8 !important;
+    color: #38bdf8 !important;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 5px rgba(56, 189, 248, 0.2);
+}
+
+.app-footer:not(.footer-minimized) .social-link:hover {
+    background: rgba(56, 189, 248, 0.1) !important;
+    box-shadow: 0 0 15px rgba(56, 189, 248, 0.5) !important;
+    transform: translateY(-2px);
+}
+
+.social-icon {
+    width: 22px;
+    height: 22px;
+    fill: currentColor;
+}
+
+.footer-bootcamp {
+    font-size: 0.85rem;
+    color: #95a5a6;
+    line-height: 1.5;
+    margin: 0;
+    padding: 12px;
+    background-color: rgba(52, 152, 219, 0.1);
+    border-left: 4px solid #3498db;
+    border-radius: 4px;
+}
+
+/* Cyber Theme - Refined Codecademy Box for Expanded Footer */
+.app-footer:not(.footer-minimized) .footer-bootcamp {
+    background: rgba(255, 255, 255, 0.03) !important; /* Very subtle fill */
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-left: 3px solid #00e0ff !important; /* Cyan accent line */
+    border-radius: 6px;
+    color: #e2e8f0 !important;
+}
+
+.footer-bottom {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-top: 1px solid rgba(52, 152, 219, 0.3);
+    padding: 10px 30px;
+    padding-left: 50px; /* Make room for toggle button */
+    transition: all 0.3s ease;
+}
+
+.app-footer.footer-minimized .footer-bottom {
+    padding: 10px 30px;
+    padding-left: 50px; /* Keep space for toggle button even when minimized */
+}
+
+.footer-bottom-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    font-size: 0.85rem;
+}
+
+.footer-copyright,
+.footer-license,
+.footer-version {
+    margin: 0;
+    color: #95a5a6;
+}
+
+.footer-license-link {
+    color: #3498db;
+    text-decoration: underline;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.footer-license-link:hover {
+    color: #5dade2;
+    text-decoration: underline;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 10000; /* High z-index to appear above minimize graphic (z-index: 1000) */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+    animation: fadeIn 0.3s ease;
+}
+
+.modal.show {
+    display: block;
+}
+
+.modal-content {
+    background: rgba(15, 23, 42, 0.95) !important; /* Very dark glass */
+    backdrop-filter: blur(12px) !important;
+    border: 1px solid rgba(56, 189, 248, 0.3) !important; /* Subtle Cyan border */
+    border-radius: 12px !important;
+    margin: 10% auto;
+    padding: 30px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    width: 90%;
+    max-width: 500px;
+    animation: slideDown 0.3s ease;
+    color: #e2e8f0 !important; /* Light text */
+}
+
+.modal-content h2 {
+    color: #e2e8f0; /* Light text for modal titles */
+}
+
+.modal-provider {
+    color: #e2e8f0; /* Light text to match theme */
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 25px;
+}
+
+.btn-primary {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background-color: #2563eb; /* Blue */
+    color: white;
+    font-weight: 500;
+}
+
+.btn-primary:hover {
+    background-color: #1d4ed8; /* Darker blue on hover */
+}
+
+.btn-primary:disabled {
+    background-color: #6c757d;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.btn-secondary {
+    padding: 10px 20px;
+    border: 1px solid #94a3b8;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: transparent;
+    color: #94a3b8;
+    font-weight: 500;
+}
+
+.btn-secondary:hover {
+    background-color: rgba(148, 163, 184, 0.1);
+    border-color: #cbd5e1;
+    color: #cbd5e1;
+}
+
+.btn-danger {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background-color: #dc2626; /* Red */
+    color: white;
+    font-weight: 500;
+}
+
+.btn-danger:hover {
+    background-color: #b91c1c; /* Darker red on hover */
+}
+
+.modal-buttons-vertical {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 25px;
+}
+
+.btn-action {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background-color: #2563eb; /* Blue to match btn-primary */
+    color: white;
+    width: 100%;
+}
+
+.btn-action:hover {
+    background-color: #1d4ed8; /* Darker blue on hover */
+}
+
+/* Override btn-action background when btn-danger class is also present */
+.btn-action.btn-danger {
+    background-color: #dc2626; /* Red */
+}
+
+.btn-action.btn-danger:hover {
+    background-color: #b91c1c; /* Darker red on hover */
+}
+
+.modal-description {
+    color: #e2e8f0; /* Light text to match theme */
+    font-size: 0.95rem;
+    margin: 15px 0;
+    line-height: 1.5;
+}
+
+.refresh-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 0;
+    margin: 0;
+    color: #007bff;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.refresh-btn i {
+    width: 14.4px; /* Reduced by 20% from 18px (18px * 0.8 = 14.4px) */
+    height: 14.4px; /* Reduced by 20% from 18px (18px * 0.8 = 14.4px) */
+    stroke-width: 2;
+}
+
+body.dark-mode .refresh-btn {
+    color: #5dade2;
+}
+
+body.dark-mode .refresh-btn:hover {
+    color: #7fb3d3;
+}
+
+#provider-status-section {
+    margin-top: 5px;
+    width: 100%;
+    max-width: 100%;
+    background-color: #fff;
+    border-radius: 4px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    padding: 4px;
+    box-sizing: border-box;
+}
+
+.provider-table-wrapper {
+    width: 100%;
+    overflow-x: visible;
+    margin-top: 2px;
+    padding-bottom: 1px;
+    padding-left: 0; /* Remove left padding */
+    padding-right: 0; /* Remove right padding */
+    flex: 1; /* Fill available vertical space */
+    min-height: 0; /* Allow shrinking */
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+#provider-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-top: 0;
+    table-layout: fixed;
+    min-width: 100%;
+}
+
+/* Remove vertical lines, use whitespace for separation */
+#provider-table th,
+#provider-table td {
+    border: none;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.3); /* Subtle light border for frosted glass theme */
+    padding: 2px 3px; /* Further reduced padding to eliminate scroll bars */
+    font-size: 0.85rem; /* Base font size */
+    vertical-align: middle;
+    line-height: 1.2; /* Reduced line height to save vertical space */
+    color: #e2e8f0; /* Light color for readability on frosted glass */
+}
+
+#provider-table th {
+    text-align: center; /* Center all header fields */
+    font-size: 1rem; /* Increased header font size */
+    font-weight: 600;
+    background: transparent; /* Remove light background for frosted glass theme */
+    color: #94a3b8; /* Light gray text for frosted glass theme */
+    padding: 3px 3px; /* Further reduced padding to eliminate scroll bars */
+}
+
+/* Column widths - properly sized to fit all content */
+/* 1st column: provider name with radio button */
+#provider-table th:nth-child(1),
+#provider-table td:nth-child(1) {
+    width: 100px;
+    min-width: 100px;
+    max-width: 100px;
+    padding: 2px 3px; /* Reduced padding to save space */
+    text-align: left; /* Left align provider column */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Align Provider header with provider names (account for radio button + gap) */
+#provider-table th:nth-child(1) {
+    padding-left: 30px; /* Match cell padding + radio button (18px) + gap (8px) = ~30px */
+    text-align: left; /* Ensure it's not centered */
+}
+
+/* Increase font size for provider column data */
+#provider-table td:nth-child(1) {
+    font-size: 1rem; /* Increased provider column font size */
+    color: #38bdf8; /* Light blue to match theme and stand out */
+}
+
+/* 2nd column: model dropdown */
+#provider-table th:nth-child(2),
+#provider-table td:nth-child(2) {
+    width: 100px; /* Reduced width to save space */
+    min-width: 100px;
+    max-width: 100px;
+    padding: 2px 3px; /* Reduced padding and horizontal spacing */
+    text-align: center; /* Center Model column */
+    overflow: visible;
+}
+
+/* 3rd column: cost */
+#provider-table th:nth-child(3),
+#provider-table td:nth-child(3) {
+    width: 60px; /* Reduced width to save space */
+    min-width: 60px;
+    max-width: 60px;
+    padding: 2px 2px; /* Reduced padding */
+    text-align: center;
+}
+
+/* Cost column header matches other headers */
+#provider-table th:nth-child(3) {
+    font-size: 1rem; /* Match other header font size */
+}
+
+/* Cost column data - reduced font size */
+#provider-table td:nth-child(3) {
+    font-size: 0.85em !important; /* Reduced font size for cost values */
+    font-weight: 400 !important; /* Less bold */
+}
+
+#provider-table td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#provider-table td.model-cell {
+    white-space: normal;
+    overflow: visible;
+}
+
+#provider-table tbody tr {
+    transition: background-color 0.2s ease;
+    cursor: pointer;
+    background: transparent; /* Remove white background for frosted glass theme */
+}
+
+/* Hover effect for all rows */
+#provider-table tbody tr:hover {
+    background: rgba(148, 163, 184, 0.1); /* Subtle light background on hover for frosted glass theme */
+}
+
+/* Active provider row highlight */
+#provider-table tbody tr.active-provider {
+    background: rgba(59, 130, 246, 0.15); /* Subtle blue background for active row */
+    border-left: 3px solid #3b82f6;
+}
+
+#provider-table tbody tr.active-provider:hover {
+    background: rgba(59, 130, 246, 0.2); /* Slightly more visible on hover */
+}
+
+.tabs-actions {
+    display: flex;
+    gap: 8px;
+    margin-left: auto;
+    align-items: center;
+}
+
+.history-action-btn,
+.clear-history-button-tabs {
+    background: transparent;
+    border: none;
+    padding: 0;
+    font-size: 1.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6c757d;
+    transition: color 0.2s ease;
+}
+
+.history-action-btn:hover {
+    color: #007bff;
+}
+
+.clear-history-button-tabs:hover {
+    color: #dc3545;
+}
+
+.history-action-btn i,
+.clear-history-button-tabs i {
+    width: 20px;
+    height: 20px;
+    stroke-width: 2;
+}
+
+body.dark-mode .history-action-btn,
+body.dark-mode .clear-history-button-tabs {
+    color: #888;
+}
+
+body.dark-mode .history-action-btn:hover {
+    color: #5dade2;
+}
+
+body.dark-mode .clear-history-button-tabs:hover {
+    color: #dc3545;
+}
+
+/* History Search Panel */
+.history-search-panel {
+    margin: 10px 0;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+}
+
+.history-search-panel.hidden {
+    display: none;
+}
+
+#history-search-input {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: 10px;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    margin-bottom: 15px;
+}
+
+.history-results {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.history-item {
+    padding: 12px;
+    margin-bottom: 8px;
+    background-color: white;
+    border-radius: 6px;
+    border: 1px solid #dee2e6;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.history-item:hover {
+    background-color: #f0f0f0;
+    border-color: #007bff;
+}
+
+.history-item-title {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 4px;
+    font-size: 0.95rem;
+}
+
+.history-item-query {
+    color: #666;
+    font-size: 0.85rem;
+    margin-bottom: 4px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.history-item-meta {
+    color: #999;
+    font-size: 0.75rem;
+    display: flex;
+    gap: 12px;
+}
+
+body.dark-mode .history-search-panel {
+    background-color: #2a2a2a;
+    border-color: #444;
+}
+
+body.dark-mode #history-search-input {
+    background-color: #1e1e1e;
+    border-color: #555;
+    color: #e0e0e0;
+}
+
+body.dark-mode .history-item {
+    background-color: #1e1e1e;
+    border-color: #444;
+}
+
+body.dark-mode .history-item:hover {
+    background-color: #2a2a2a;
+    border-color: #007bff;
+}
+
+body.dark-mode .history-item-title {
+    color: #e0e0e0;
+}
+
+body.dark-mode .history-item-query {
+    color: #b0b0b0;
+}
+
+body.dark-mode .history-item-meta {
+    color: #888;
+}
+
+.provider-table-header-center {
+    text-align: center;
+    font-size: 0.75rem; /* Reduced for condensed layout */
+}
+
+#provider-table .cost-cell {
+    text-align: center;
+    white-space: nowrap;
+}
+
+#provider-table .cost-cell div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px; /* Reduced gap to save vertical space */
+}
+
+#provider-table .select-arrow {
+    text-align: center;
+    display: block;
+}
+
+.select-arrow {
+    font-size: 1.6rem; /* Increased arrow size for better visibility */
+    color: #007bff;
+    font-weight: bold;
+    transform: scaleX(1.5); /* Make arrows bigger horizontally */
+    display: inline-block;
+}
+
+
+.status-cell {
+    text-align: center;
+}
+
+/* Custom Radio Button Component */
+.provider-radio-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.provider-radio-button {
+    position: relative;
+    width: 18px;
+    height: 18px;
+    min-width: 18px;
+    min-height: 18px;
+    border-radius: 50%;
+    border: 2px solid #ccc;
+    background-color: transparent;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+/* Health status borders */
+.provider-radio-button.healthy {
+    border-color: #00e0ff; /* Cyan border */
+    box-shadow: 0 0 8px #00e0ff !important; /* Cyan halo - API Good status - force with !important */
+}
+
+.provider-radio-button.unhealthy {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.2); /* Red halo */
+}
+
+/* Selected state - filled inner circle */
+.provider-radio-button.selected::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #007bff;
+}
+
+/* Selected + healthy state */
+.provider-radio-button.selected.healthy {
+    border-color: #28a745;
+    box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.4);
+}
+
+.provider-radio-button.selected.healthy::after {
+    background-color: #28a745;
+}
+
+/* Selected + unhealthy state */
+.provider-radio-button.selected.unhealthy {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.4);
+}
+
+.provider-radio-button.selected.unhealthy::after {
+    background-color: #dc3545;
+}
+
+/* Hover effect */
+.provider-radio-container:hover .provider-radio-button {
+    transform: scale(1.1);
+}
+
+.provider-radio-name {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 1rem; /* Increased font size to match provider column */
+    color: #38bdf8; /* Light blue to match theme and stand out */
+}
+
+/* Dark mode support */
+body.dark-mode .provider-radio-name {
+    color: #38bdf8; /* Light blue to match theme and stand out */
+}
+
+body.dark-mode .provider-radio-button {
+    border-color: #666;
+}
+
+body.dark-mode .provider-radio-button.healthy {
+    border-color: #00e0ff; /* Cyan border - same as light mode */
+    box-shadow: 0 0 8px #00e0ff !important; /* Cyan halo - API Good status - force with !important */
+}
+
+body.dark-mode .provider-radio-button.unhealthy {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.3);
+}
+
+.cost-cell {
+    text-align: center;
+    font-size: 0.85em !important; /* Reduced font size for cost values */
+    font-weight: 400 !important; /* Less bold */
+    white-space: nowrap;
+    overflow: visible;
+    word-wrap: normal;
+    line-height: 1.2; /* Reduced line height for condensed layout */
+    color: #e2e8f0; /* Light color for readability on frosted glass */
+}
+
+/* Larger arrows in cost column */
+#provider-table .cost-cell span {
+    font-size: 1.6rem; /* Increased arrow size for better visibility */
+    font-weight: bold;
+    display: inline-block;
+    margin-right: 4px;
+    vertical-align: middle;
+}
+
+.model-select {
+    width: 100%;
+    min-width: 50px;
+    padding: 2px 4px; /* Reduced padding for condensed layout */
+    border: 1px solid #334155; /* Dark border for frosted glass theme */
+    border-radius: 2px;
+    font-size: 0.75rem; /* Reduced for condensed layout */
+    background-color: #1e293b; /* Dark slate background for frosted glass theme */
+    cursor: pointer;
+    color: white; /* White text for frosted glass theme */
+    box-sizing: border-box;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    max-width: 100%;
+}
+
+.gauge {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+.progress-message {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 8px;
+    padding: 10px;
+    margin: 8px auto;
+    /* Center horizontally */
+    animation: fadeIn 0.3s ease-in;
+    max-width: 45%;
+    /* 50% of current 90% */
+}
+
+.progress-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 8px;
+    color: white;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.progress-icon {
+    font-size: 1.2rem;
+    animation: pulse 2s infinite;
+}
+
+.progress-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.progress-step {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.step-indicator {
+    font-size: 1rem;
+    color: white;
+    min-width: 16px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.step-text {
+    color: white;
+    flex: 1;
+    font-size: 0.8rem;
+}
+
+.step-time {
+    font-size: 0.85rem;
+    opacity: 0.9;
+    font-weight: normal;
+    margin-left: 4px;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(-10px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+@media (max-width: 1200px) {
+    .main-content {
+        flex-wrap: wrap;
+    }
+
+    .container {
+        order: 2;
+        flex: 1 1 60%;
+        min-width: 350px;
+    }
+
+    /* Drawer is now fixed, so no flex order needed */
+    
+    /* Keep drawer at fixed width even at 1200px */
+    .settings-drawer.open {
+        width: 320px !important; /* Override any flex sizing */
+        max-width: 320px; /* Prevent it from growing beyond 320px */
+    }
+}
+
+/* Keep drawer hidden on small screens unless explicitly open */
+@media (max-width: 1200px) {
+    .settings-drawer:not(.open) {
+        width: 0 !important;
+        display: none;
+        /* prevents reflow from flex-wrap reordering */
+    }
+}
+
+#query-stats.new-query .stat-item:nth-child(n+3) {
+    display: none;
+}
+
+@media (max-width: 900px) {
+    .main-content {
+        flex-direction: column;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .container {
+        width: 100%;
+        flex: 1 1 auto;
+        border-right: none;
+    }
+
+    #ai-provider-status {
+        width: 100%;
+        flex: 1 1 auto;
+        margin-bottom: 20px;
+    }
+}
+
+#progress-container {
+    margin-top: 10px;
+    padding: 10px;
+    border: 1px solid rgba(148, 163, 184, 0.3);
+    border-radius: 5px;
+    background-color: rgba(15, 23, 42, 0.5);
+    text-align: center; /* Center all content in the progress container */
+}
+
+#progress-bar-wrapper {
+    width: 100%;
+    background-color: rgba(15, 23, 42, 0.5) !important; /* Dark, semi-transparent track */
+    border: 1px solid rgba(148, 163, 184, 0.3) !important; /* Subtle border to match panels */
+    border-radius: 4px; /* Slight rounding */
+    overflow: hidden; /* Ensure bar is contained */
+    margin-bottom: 5px;
+    position: relative; /* Enable absolute positioning for percentage text */
+    height: 30px; /* Increased height by 50% (from 20px to 30px) */
+}
+
+#progress-bar {
+    height: 30px; /* Increased height by 50% (from 20px to 30px) */
+    width: 0%;
+    background-image: linear-gradient(90deg, #00e0ff, #0072ff); /* Glowing cyan to blue gradient */
+    border: none; /* Remove any borders */
+    transition: width 0.3s ease-in-out;
+    box-shadow: 0 0 10px rgba(0, 224, 255, 0.5); /* Add glow effect */
+}
+
+#progress-bar-percentage {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 1.1rem; /* Increased font size for percentage text */
+    font-weight: 600; /* Bolder for better visibility */
+    font-family: 'Roboto Mono', 'Fira Code', 'JetBrains Mono', 'Courier New', monospace !important; /* Modern tech font matching theme */
+    letter-spacing: 0.5px; /* Add slight letter spacing for modern look */
+    pointer-events: none; /* Allow clicks to pass through */
+    z-index: 10; /* Ensure text is above the progress bar */
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7), 0 0 8px rgba(0, 224, 255, 0.3); /* Enhanced shadow with glow effect */
+}
+
+#progress-status-message {
+    font-size: 1.2rem; /* Increased from 0.9rem */
+    color: #e2e8f0; /* Light, readable text */
+    text-align: center; /* Center the text */
+    font-weight: 500; /* Slightly bolder for better visibility */
+}
+
+.hidden {
+    display: none;
+}
+
+@media (max-width: 1200px) {
+    html {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 900px) {
+    html {
+        font-size: 12px;
+    }
+}
+
+/* ============================================
+   DARK MODE STYLES
+   ============================================ */
+
+body.dark-mode {
+    background-image: url('images/background.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-color: #1a1a1a; /* Fallback color */
+    color: #e0e0e0;
+}
+
+body.dark-mode .app-header {
+    background: rgba(30, 41, 59, 0.50); /* More transparent to match frosted glass theme */
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(148, 163, 184, 0.5);
+}
+
+body.dark-mode .main-content {
+    background-color: #1a1a1a;
+}
+
+body.dark-mode .container {
+    background-color: #252525;
+    border-right-color: #333;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .query-stats {
+    background-color: #2a2a2a;
+    border-color: #444;
+    border-top-color: #3498db;
+}
+
+body.dark-mode .stat-item {
+    background-color: #1e1e1e;
+    border-color: #444;
+}
+
+
+body.dark-mode #chat-container {
+    background-color: #1e1e1e;
+    border-color: #444;
+}
+
+body.dark-mode .chat-message {
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .user-message {
+    background-color: #1e293b; /* Dark slate blue - same as light mode */
+    color: #e2e8f0;
+    border: 1px solid #334155;
+}
+
+body.dark-mode .ai-message {
+    background: rgba(15, 23, 42, 0.5); /* Frosted glass - same as light mode */
+    color: #e2e8f0;
+    border: 1px solid rgba(148, 163, 184, 0.3);
+}
+
+body.dark-mode .stats-message {
+    background: transparent; /* Transparent - same as light mode */
+    border: 1px solid #334155;
+    color: #94a3b8;
+}
+
+body.dark-mode .stats-bubble-content h4 {
+    color: #94a3b8; /* Light gray - same as light mode */
+    border-bottom-color: rgba(148, 163, 184, 0.3);
+}
+
+body.dark-mode .stat-label {
+    color: #94a3b8; /* Light gray - same as light mode */
+}
+
+body.dark-mode .stat-value {
+    color: #e2e8f0; /* Light text - same as light mode */
+}
+
+body.dark-mode .error-message {
+    background-color: #4a2d2d;
+    color: #e8b8b8;
+}
+
+body.dark-mode form#query-form {
+    background: transparent; /* Dark theme: transparent to show page background */
+    border-top-color: #007bff;
+}
+
+body.dark-mode #query-input {
+    background-color: transparent !important; /* Transparent background for frosted glass theme */
+    border: none; /* Remove existing borders */
+    border-bottom: 1px solid #94a3b8; /* Modern-looking bottom border */
+    color: #e2e8f0 !important; /* White text so it's visible */
+}
+
+body.dark-mode #query-input::placeholder {
+    color: #94a3b8 !important; /* Light gray placeholder - ensure it's visible */
+}
+
+/* Glassmorphism theme - light placeholder text */
+#query-input::placeholder {
+    color: #94a3b8 !important; /* Light gray placeholder */
+}
+
+/* Force-style the bottom 'Ask a question...' input */
+#query-input,
+input[type="text"],
+input[type="search"] {
+    background: transparent !important;
+    color: #e2e8f0 !important;
+    border: none !important;
+    border-bottom: 1px solid #94a3b8 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+
+/* Force-style the large query 'textarea' - but NOT #query-input */
+textarea:not(#query-input) {
+    background: rgba(15, 23, 42, 0.5) !important;
+    color: #e2e8f0 !important;
+    border: 1px solid rgba(148, 163, 184, 0.3) !important;
+    border-radius: 8px !important;
+}
+
+/* Fix placeholders for all */
+::placeholder {
+    color: #94a3b8 !important;
+    opacity: 1;
+}
+
+/* Dark mode overrides - inactive tabs */
+body.dark-mode .tab:not(.active) {
+    background: rgba(30, 41, 59, 0.4); /* Dark, see-through */
+    color: #94a3b8; /* Muted gray text */
+    border-color: rgba(148, 163, 184, 0.1);
+}
+
+body.dark-mode .tab:not(.active):hover:not(.disabled):not([disabled]) {
+    background: rgba(56, 189, 248, 0.1); /* Slight blue tint */
+    color: #e2e8f0; /* Brighter text */
+    border-color: rgba(56, 189, 248, 0.3);
+}
+
+/* Dark mode - active tab keeps the same gradient and glow */
+body.dark-mode .tab.active {
+    background: linear-gradient(180deg, #38bdf8 0%, #2563eb 100%);
+    color: white;
+    border-color: #38bdf8;
+    box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+}
+
+body.dark-mode .tab-close {
+    color: white;
+}
+
+body.dark-mode .tab-close:hover {
+    color: #f0f0f0;
+}
+
+body.dark-mode .settings-drawer {
+    background: #252525;
+    box-shadow: -4px 0 20px rgba(0, 0, 0, 0.5);
+}
+
+body.dark-mode #provider-table th {
+    background: linear-gradient(180deg, #4a4a4a 0%, #3a3a3a 100%); /* Dark metallic gradient */
+    color: #e0e0e0;
+    border-bottom-color: rgba(100, 100, 100, 0.3);
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5); /* Metallic shine effect for dark mode */
+}
+
+body.dark-mode #provider-table td {
+    border-bottom-color: rgba(100, 100, 100, 0.3);
+    color: #e0e0e0;
+}
+
+body.dark-mode #provider-table tbody tr {
+    background: linear-gradient(180deg, #3a3a3a 0%, #2a2a2a 100%); /* Dark metallic gradient for rows */
+}
+
+body.dark-mode #provider-table tbody tr:hover {
+    background: linear-gradient(180deg, #4a4a4a 0%, #3a3a3a 100%); /* Lighter metallic on hover */
+}
+
+body.dark-mode #provider-table tbody tr.active-provider {
+    background: linear-gradient(180deg, #2a3a4a 0%, #1a2a3a 100%); /* Dark metallic blue gradient */
+    border-left-color: #007bff;
+}
+
+body.dark-mode #provider-table tbody tr.active-provider:hover {
+    background: linear-gradient(180deg, #3a4a5a 0%, #2a3a4a 100%); /* Lighter dark metallic blue on hover */
+}
+
+body.dark-mode .model-select {
+    background-color: #1e1e1e;
+    border-color: #555;
+    color: #e0e0e0;
+}
+
+body.dark-mode .modal {
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+body.dark-mode .modal-content {
+    background: rgba(15, 23, 42, 0.95) !important; /* Very dark glass */
+    backdrop-filter: blur(12px) !important;
+    border: 1px solid rgba(56, 189, 248, 0.3) !important; /* Subtle Cyan border */
+    color: #e2e8f0 !important; /* Light text */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+body.dark-mode .modal-content h2 {
+    color: #e2e8f0; /* Light text for modal titles */
+}
+
+body.dark-mode .modal-provider {
+    color: #e2e8f0; /* Light text - same as light mode */
+}
+
+body.dark-mode .modal-description {
+    color: #e2e8f0; /* Light text - same as light mode */
+}
+
+body.dark-mode .form-group input {
+    background-color: #1e1e1e;
+    border-color: #555;
+    color: #e0e0e0;
+}
+
+body.dark-mode .form-group input::placeholder {
+    color: #888;
+}
+
+body.dark-mode .app-footer {
+    /* Match the frosted glass theme in dark mode */
+    background: rgba(15, 23, 42, 0.90) !important; /* Dark, semi-transparent */
+    backdrop-filter: blur(12px) !important;
+    border-top: 1px solid rgba(148, 163, 184, 0.3) !important;
+    color: #e2e8f0 !important; /* Ensure text is light */
+}
+
+body.dark-mode .footer-logo,
+body.dark-mode .footer-heading {
+    color: #5dade2;
+}
+
+body.dark-mode .footer-tagline,
+body.dark-mode .footer-description,
+body.dark-mode .footer-list li {
+    color: #b0b0b0;
+}
+
+body.dark-mode .footer-links a {
+    color: #b0b0b0;
+}
+
+body.dark-mode .footer-links a:hover {
+    color: #5dade2;
+}
+
+body.dark-mode .footer-license-link {
+    color: #5dade2;
+}
+
+body.dark-mode .footer-license-link:hover {
+    color: #7fb3d3;
+}
+
+body.dark-mode .drawer-toggle {
+    background: transparent; /* Remove gradient in dark mode too */
+}
+
+body.dark-mode .drawer-toggle:hover {
+    background: transparent; /* Keep transparent */
+    opacity: 0.85;
+}
+
+body.dark-mode .collapse-btn {
+    background: linear-gradient(180deg, #5a6fa8, #3d4f7a);
+}
+
+body.dark-mode header {
+    border-bottom-color: #444;
+}
+
+body.dark-mode header h1 {
+    color: #e0e0e0;
+}
+
+body.dark-mode header p {
+    color: #b0b0b0;
+}
+
+body.dark-mode .reset-message {
+    background: rgba(15, 23, 42, 0.5); /* Dark, transparent glass - same as light mode */
+    border: 1px solid rgba(148, 163, 184, 0.3); /* Light border - same as light mode */
+    color: #00e0ff; /* Light cyan that matches the theme - same as light mode */
+}
+
+body.dark-mode pre {
+    background-color: #1e1e1e;
+    border-color: #444;
+    color: #e0e0e0;
+}
+
+/* Fallback code blocks (when CodeMirror doesn't load) */
+.sql-editor-container pre,
+.sql-editor-container code {
+    background: #0d1117 !important;
+    color: #e2e8f0 !important;
+    font-family: 'Fira Code', 'JetBrains Mono', 'Roboto Mono', 'Courier New', monospace !important;
+    font-size: 0.9rem !important;
+    border-radius: 0 !important;
+    padding: 12px !important;
+    margin: 0 !important;
+    overflow-x: auto !important;
+}
+
+.sql-editor-container pre {
+    border-radius: 0 !important;
+    margin: 0 !important;
+}
+
+.sql-editor-container code {
+    display: block !important;
+    white-space: pre !important;
+}
+
+/* Markdown code blocks in messages */
+.ai-message code,
+.ai-message pre code,
+.markdown-content code {
+    background: rgba(13, 17, 23, 0.8) !important;
+    color: #e2e8f0 !important;
+    font-family: 'Fira Code', 'JetBrains Mono', 'Roboto Mono', 'Courier New', monospace !important;
+    padding: 2px 6px !important;
+    border-radius: 4px !important;
+    font-size: 0.85rem !important;
+}
+
+.ai-message pre {
+    background: #0d1117 !important;
+    border: 1px solid rgba(148, 163, 184, 0.2) !important;
+    border-radius: 8px !important;
+    padding: 12px !important;
+    overflow-x: auto !important;
+    margin: 10px 0 !important;
+}
+
+.ai-message pre code {
+    background: transparent !important;
+    padding: 0 !important;
+    color: #e2e8f0 !important;
+}
+
+body.dark-mode code {
+    background-color: #1e1e1e;
+    color: #e0e0e0;
+}
+
+body.dark-mode table {
+    border-color: #444;
+}
+
+body.dark-mode table th {
+    background-color: #2a2a2a;
+    color: #e0e0e0;
+    border-color: #444;
+}
+
+body.dark-mode table td {
+    border-color: #444;
+    color: #e0e0e0;
+}
+
+body.dark-mode table tr:hover {
+    background-color: #2a2a2a;
+}
+
+/* ============================================
+   LOADING SPINNERS AND ANIMATIONS
+   ============================================ */
+
+.loading-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(0, 123, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #007bff;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.skeleton-loader {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s ease-in-out infinite;
+    border-radius: 4px;
+}
+
+body.dark-mode .skeleton-loader {
+    background: linear-gradient(90deg, #2a2a2a 25%, #333 50%, #2a2a2a 75%);
+    background-size: 200% 100%;
+}
+
+@keyframes loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+.processing-message {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.processing-message .loading-spinner {
+    width: 16px;
+    height: 16px;
+    border-width: 2px;
+}
+
+/* Chart container styling - Fixed height with dark theme */
+.chart-container,
+.chart-wrapper {
+    height: 350px !important; /* Fixed compact height */
+    max-height: 40vh !important; /* Ensure it never eats more than 40% of the screen */
+    width: 100% !important;
+    position: relative !important;
+    margin-bottom: 20px !important;
+    margin-top: 20px !important;
+    padding: 15px !important;
+    background: #0d1117 !important; /* Dark card background matching SQL editor */
+    backdrop-filter: blur(10px) !important;
+    border: 1px solid rgba(148, 163, 184, 0.2) !important;
+    border-radius: 8px !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+}
+
+.chart-container canvas {
+    max-width: 100% !important;
+    max-height: calc(100% - 60px) !important; /* Account for chart-controls height */
+    width: 100% !important;
+    height: calc(100% - 60px) !important; /* Ensure canvas fits within container */
+    display: block !important;
+}
+
+body.dark-mode .chart-container,
+body.dark-mode .chart-wrapper {
+    background: #0d1117 !important; /* Dark card background */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Light mode - also use dark theme for consistency */
+body:not(.dark-mode) .chart-container,
+body:not(.dark-mode) .chart-wrapper {
+    background: #0d1117 !important;
+}
+
+/* Map container styling - Glass Card / Holographic projection */
+.map-container {
+    background: rgba(15, 23, 42, 0.6) !important;
+    border: 1px solid #38bdf8 !important;
+    border-radius: 12px !important;
+    padding: 20px !important;
+    margin-bottom: 15px !important;
+    height: 300px !important; /* Fixed height for consistency */
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+    position: relative !important;
+    box-sizing: border-box !important;
+    backdrop-filter: blur(12px) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3), 0 0 15px rgba(56, 189, 248, 0.2) !important;
+}
+
+.map-container h3 {
+    color: #38bdf8 !important;
+    margin: 0 0 15px 0 !important;
+    font-size: 1.1rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    text-shadow: 0 0 10px rgba(56, 189, 248, 0.5) !important;
+}
+
+/* Ensure map SVG fills the container */
+.map-container > div {
+    height: calc(100% - 50px) !important; /* Account for header */
+    width: 100% !important;
+}
+
+body.dark-mode .map-container {
+    background: rgba(15, 23, 42, 0.7) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), 0 0 20px rgba(56, 189, 248, 0.3) !important;
+}
+
+/* Analysis Sections Styling */
+.analysis-section {
+    background: rgba(15, 23, 42, 0.6) !important;
+    backdrop-filter: blur(12px) !important;
+    border: 1px solid rgba(56, 189, 248, 0.3) !important;
+    border-radius: 12px !important;
+    padding: 20px !important;
+    margin-bottom: 20px !important;
+    color: #e2e8f0 !important;
+}
+
+.analysis-section h3 {
+    color: #38bdf8 !important;
+    margin: 0 0 15px 0 !important;
+    font-size: 1.1rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    text-shadow: 0 0 10px rgba(56, 189, 248, 0.5) !important;
+}
+
+body.dark-mode .analysis-section {
+    background: rgba(15, 23, 42, 0.7) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), 0 0 20px rgba(56, 189, 248, 0.3) !important;
+}
+
+/* Statistical Summary */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.stat-card {
+    background: rgba(30, 41, 59, 0.6) !important;
+    border: 1px solid rgba(148, 163, 184, 0.2) !important;
+    border-radius: 8px !important;
+    padding: 15px !important;
+    transition: all 0.3s ease !important;
+}
+
+.stat-card:hover {
+    border-color: rgba(56, 189, 248, 0.5) !important;
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.2) !important;
+}
+
+.stat-card h4 {
+    color: #38bdf8 !important;
+    margin: 0 0 12px 0 !important;
+    font-size: 0.95rem !important;
+    font-weight: 600 !important;
+    border-bottom: 1px solid rgba(56, 189, 248, 0.2) !important;
+    padding-bottom: 8px !important;
+}
+
+.stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+.stat-row:last-child {
+    border-bottom: none;
+}
+
+.stat-label {
+    color: #94a3b8 !important;
+    font-size: 0.85rem !important;
+}
+
+.stat-value {
+    color: #e2e8f0 !important;
+    font-weight: 600 !important;
+    font-size: 0.9rem !important;
+    font-family: 'Courier New', monospace !important;
+}
+
+/* Correlation Matrix */
+.correlation-table-wrapper {
+    overflow-x: auto;
+    margin-top: 15px;
+}
+
+.correlation-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+
+.correlation-table th {
+    background: rgba(30, 41, 59, 0.8) !important;
+    color: #38bdf8 !important;
+    padding: 10px 8px !important;
+    text-align: center !important;
+    font-weight: 600 !important;
+    border: 1px solid rgba(56, 189, 248, 0.3) !important;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.correlation-table th:first-child {
+    text-align: left !important;
+    position: sticky;
+    left: 0;
+    z-index: 2;
+    background: rgba(30, 41, 59, 0.95) !important;
+}
+
+.correlation-table td {
+    padding: 8px !important;
+    text-align: center !important;
+    border: 1px solid rgba(148, 163, 184, 0.1) !important;
+    font-family: 'Courier New', monospace !important;
+    font-weight: 600 !important;
+}
+
+.corr-cell {
+    transition: all 0.2s ease !important;
+    cursor: help !important;
+}
+
+.corr-cell.strong.positive {
+    background: rgba(56, 189, 248, 0.3) !important;
+    color: #67e8f9 !important;
+}
+
+.corr-cell.strong.negative {
+    background: rgba(239, 68, 68, 0.3) !important;
+    color: #fca5a5 !important;
+}
+
+.corr-cell.moderate.positive {
+    background: rgba(56, 189, 248, 0.15) !important;
+    color: #93c5fd !important;
+}
+
+.corr-cell.moderate.negative {
+    background: rgba(239, 68, 68, 0.15) !important;
+    color: #fca5a5 !important;
+}
+
+.corr-cell.weak {
+    background: rgba(148, 163, 184, 0.1) !important;
+    color: #cbd5e1 !important;
+}
+
+.corr-cell:hover {
+    transform: scale(1.1) !important;
+    z-index: 10 !important;
+    position: relative !important;
+}
+
+.correlation-legend {
+    display: flex;
+    gap: 20px;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(148, 163, 184, 0.2);
+    flex-wrap: wrap;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8rem;
+    color: #94a3b8;
+}
+
+.legend-color {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    border: 1px solid rgba(148, 163, 184, 0.3);
+}
+
+.legend-color.strong.positive {
+    background: rgba(56, 189, 248, 0.3);
+}
+
+.legend-color.strong.negative {
+    background: rgba(239, 68, 68, 0.3);
+}
+
+.legend-color.moderate.positive {
+    background: rgba(56, 189, 248, 0.15);
+}
+
+.legend-color.moderate.negative {
+    background: rgba(239, 68, 68, 0.15);
+}
+
+.legend-color.weak {
+    background: rgba(148, 163, 184, 0.1);
+}
+
+/* Trend Analysis */
+.trend-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.trend-card {
+    background: rgba(30, 41, 59, 0.6) !important;
+    border: 1px solid rgba(148, 163, 184, 0.2) !important;
+    border-radius: 8px !important;
+    padding: 15px !important;
+    transition: all 0.3s ease !important;
+}
+
+.trend-card:hover {
+    border-color: rgba(56, 189, 248, 0.5) !important;
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.2) !important;
+}
+
+.trend-card h4 {
+    color: #38bdf8 !important;
+    margin: 0 0 12px 0 !important;
+    font-size: 0.95rem !important;
+    font-weight: 600 !important;
+    border-bottom: 1px solid rgba(56, 189, 248, 0.2) !important;
+    padding-bottom: 8px !important;
+}
+
+.trend-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.trend-stat {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+.trend-stat:last-child {
+    border-bottom: none;
+}
+
+.trend-label {
+    color: #94a3b8 !important;
+    font-size: 0.85rem !important;
+}
+
+.trend-value {
+    color: #e2e8f0 !important;
+    font-weight: 600 !important;
+    font-size: 0.9rem !important;
+    font-family: 'Courier New', monospace !important;
+}
+
+.trend-value.positive {
+    color: #67e8f9 !important;
+}
+
+.trend-value.negative {
+    color: #fca5a5 !important;
+}
+
+.trend-value.trend-upward {
+    color: #67e8f9 !important;
+}
+
+.trend-value.trend-downward {
+    color: #fca5a5 !important;
+}
+
+.trend-value.trend-mixed {
+    color: #fbbf24 !important;
+}
+
+.growth-rates {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.growth-rates h5 {
+    color: #94a3b8 !important;
+    font-size: 0.85rem !important;
+    margin: 0 0 10px 0 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+}
+
+.growth-list {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.growth-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+    font-size: 0.8rem;
+}
+
+.growth-item:last-child {
+    border-bottom: none;
+}
+
+.growth-period {
+    color: #cbd5e1 !important;
+    flex: 1;
+}
+
+.growth-rate {
+    font-weight: 600 !important;
+    font-family: 'Courier New', monospace !important;
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+.growth-rate.positive {
+    color: #67e8f9 !important;
+    background: rgba(56, 189, 248, 0.1) !important;
+}
+
+.growth-rate.negative {
+    color: #fca5a5 !important;
+    background: rgba(239, 68, 68, 0.1) !important;
+}
+
+.growth-more {
+    color: #64748b !important;
+    font-size: 0.75rem !important;
+    font-style: italic !important;
+    text-align: center !important;
+    padding: 8px 0 !important;
+}
+
+/* Custom scrollbar for growth list */
+.growth-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.growth-list::-webkit-scrollbar-track {
+    background: rgba(15, 23, 42, 0.5);
+    border-radius: 3px;
+}
+
+.growth-list::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.3);
+    border-radius: 3px;
+}
+
+.growth-list::-webkit-scrollbar-thumb:hover {
+    background: rgba(148, 163, 184, 0.5);
+}
+
+/* Chart Controls - Dark Theme Header Bar */
+.chart-controls {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important; /* Slight gap between items */
+    margin-bottom: 10px !important;
+    padding: 8px 0 !important; /* Remove padding, use gap instead */
+    background: transparent !important; /* Transparent background */
+    border-radius: 0 !important;
+    border: none !important;
+}
+
+.chart-controls label {
+    color: #e2e8f0 !important;
+    font-size: 0.85rem !important;
+    font-weight: 500 !important;
+    margin: 0 !important;
+}
+
+/* Chart Type Dropdown - Dark Mode Styling */
+.chart-type-select {
+    padding: 6px 12px !important;
+    border: 1px solid rgba(148, 163, 184, 0.3) !important; /* Dark border */
+    border-radius: 6px !important;
+    font-size: 0.85rem !important;
+    background: rgba(30, 41, 59, 0.8) !important; /* Dark grey background */
+    color: #e2e8f0 !important; /* White text */
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    appearance: none !important; /* Remove default browser styling */
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23e2e8f0' d='M6 9L1 4h10z'/%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 8px center !important;
+    background-size: 12px !important;
+    padding-right: 30px !important;
+}
+
+.chart-type-select:hover {
+    border-color: #38bdf8 !important; /* Cyan on hover */
+    background-color: rgba(30, 41, 59, 0.9) !important;
+}
+
+.chart-type-select:focus {
+    outline: none !important;
+    border-color: #38bdf8 !important;
+    box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2) !important;
+}
+
+.chart-type-select option {
+    background: #1e293b !important; /* Dark background for dropdown options */
+    color: #e2e8f0 !important;
+    padding: 8px !important;
+}
+
+/* Chart Download Button - Dark Theme */
+.chart-download-btn {
+    padding: 6px 12px !important;
+    background: linear-gradient(180deg, #38bdf8 0%, #2563eb 100%) !important; /* Cyan gradient */
+    color: white !important;
+    border: 1px solid #38bdf8 !important;
+    border-radius: 6px !important;
+    cursor: pointer !important;
+    font-size: 0.85rem !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.3) !important;
+}
+
+.chart-download-btn:hover {
+    background: #38bdf8 !important;
+    box-shadow: 0 0 15px rgba(56, 189, 248, 0.5) !important;
+    transform: translateY(-1px) !important;
+}
+
+.chart-download-btn:active {
+    transform: translateY(0) !important;
+}
+
+.chart-download-btn i {
+    width: 14px !important;
+    height: 14px !important;
+}
+
+/* Dark mode overrides (already using dark theme by default) */
+body.dark-mode .chart-controls {
+    background: transparent !important;
+}
+
+body.dark-mode .chart-type-select {
+    background: rgba(30, 41, 59, 0.8) !important;
+    border-color: rgba(148, 163, 184, 0.3) !important;
+    color: #e2e8f0 !important;
+}
+
+/* Light mode - also use dark theme for consistency */
+body:not(.dark-mode) .chart-controls {
+    background: transparent !important;
+}
+
+body:not(.dark-mode) .chart-type-select {
+    background: rgba(30, 41, 59, 0.8) !important;
+    border-color: rgba(148, 163, 184, 0.3) !important;
+    color: #e2e8f0 !important;
+}
+
+/* ============================================
+   ENHANCEMENT FEATURES - CSS
+   ============================================ */
+
+/* Toast Notifications */
+.toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.toast {
+    background: #333;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    min-width: 250px;
+    max-width: 400px;
+    opacity: 0;
+    transform: translateX(100%);
+    transition: all 0.3s ease;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.toast-success {
+    background: #28a745;
+}
+
+.toast-error {
+    background: #dc3545;
+}
+
+.toast-info {
+    background: #17a2b8;
+}
+
+/* Copy and Export Buttons */
+.copy-btn, .export-btn {
+    background: #5a6fa8;
+    color: white;
+    border: none;
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.75rem;
+    margin-left: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: background 0.2s;
+}
+
+.copy-btn:hover, .export-btn:hover {
+    background: #4a5f98;
+}
+
+.copy-btn i, .export-btn i {
+    width: 14px;
+    height: 14px;
+}
+
+/* Performance Metrics */
+/* ============================================
+   OLD PERFORMANCE METRICS - REMOVED
+   Replaced by horizontal Tron HUD stats bar
+   ============================================ */
+/*
+.performance-metrics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+    margin-bottom: 15px;
+    padding: 12px;
+    background: #f0f8ff;
+    border-radius: 6px;
+    border: 1px solid #d0e8ff;
+}
+
+.metric-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.metric-label {
+    font-size: 0.75rem;
+    color: #666;
+    font-weight: 500;
+}
+
+.metric-value {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+body.dark-mode .performance-metrics {
+    background: #2a3a4a;
+    border-color: #3a4a5a;
+}
+
+body.dark-mode .metric-label {
+    color: #aaa;
+}
+
+body.dark-mode .metric-value {
+    color: #fff;
+}
+*/
+
+/* SQL Editor Container - Cyberpunk Theme */
+.sql-editor-container {
+    margin: 10px 0;
+    background: #0d1117 !important; /* Deep dark blue-grey */
+    border: 1px solid rgba(148, 163, 184, 0.2) !important; /* Subtle border */
+    border-radius: 12px !important; /* Rounded corners */
+    overflow: visible !important; /* Allow content to expand */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+    padding-bottom: 16px !important; /* Add padding so text doesn't touch bottom edge */
+}
+
+.sql-editor-container .CodeMirror {
+    min-height: auto !important; /* Remove fixed min-height to allow auto-sizing */
+    height: auto !important; /* Auto-expand to fit content */
+    font-size: 0.9rem !important;
+    font-family: 'Fira Code', 'JetBrains Mono', 'Roboto Mono', 'Courier New', monospace !important;
+    background: #0d1117 !important; /* Match container background */
+    color: #e2e8f0 !important;
+    /* Overflow handled by CodeMirror-scroll */
+}
+
+/* CodeMirror Theme Override - Cyberpunk Colors */
+.sql-editor-container .CodeMirror.cm-s-dracula {
+    background: #0d1117 !important;
+    color: #e2e8f0 !important;
+}
+
+/* SQL Keywords - Neon Pink/Purple */
+.sql-editor-container .CodeMirror .cm-keyword {
+    color: #ff79c6 !important; /* Neon pink */
+    font-weight: 600 !important;
+}
+
+/* SQL Keywords (SELECT, FROM, WHERE, etc.) */
+.sql-editor-container .CodeMirror .cm-builtin {
+    color: #bd93f9 !important; /* Purple */
+    font-weight: 600 !important;
+}
+
+/* Strings - Cyan/Light Blue */
+.sql-editor-container .CodeMirror .cm-string {
+    color: #8be9fd !important; /* Bright cyan */
+}
+
+.sql-editor-container .CodeMirror .cm-string-2 {
+    color: #50fa7b !important; /* Green for double-quoted strings */
+}
+
+/* Variables and Identifiers */
+.sql-editor-container .CodeMirror .cm-variable {
+    color: #f8f8f2 !important; /* Light text */
+}
+
+.sql-editor-container .CodeMirror .cm-variable-2 {
+    color: #50fa7b !important; /* Green for table/column names */
+}
+
+/* Numbers */
+.sql-editor-container .CodeMirror .cm-number {
+    color: #bd93f9 !important; /* Purple */
+}
+
+/* Operators */
+.sql-editor-container .CodeMirror .cm-operator {
+    color: #ff79c6 !important; /* Neon pink */
+}
+
+/* Comments */
+.sql-editor-container .CodeMirror .cm-comment {
+    color: #6272a4 !important; /* Muted blue-gray */
+    font-style: italic;
+}
+
+/* Line Numbers - Light Grey for High Contrast */
+.sql-editor-container .CodeMirror .CodeMirror-linenumber {
+    color: #c9d1d9 !important; /* Light grey for high contrast visibility */
+    font-family: 'Fira Code', 'JetBrains Mono', 'Roboto Mono', 'Courier New', monospace !important;
+    padding-right: 12px !important; /* Increased from 8px to 12px for better spacing */
+    text-align: right !important; /* Right-align line numbers */
+    min-width: 3.5em !important; /* Increased from 3em to 3.5em */
+    width: 3.5em !important; /* Add explicit width */
+}
+
+/* Remove White Gutter - Make line number column transparent */
+.sql-editor-container .CodeMirror .CodeMirror-gutters {
+    background: transparent !important; /* Transparent to blend with dark card */
+    border: none !important; /* Remove any borders */
+    border-right: 1px solid rgba(148, 163, 184, 0.15) !important; /* Subtle border for visual separation */
+    padding: 0 !important;
+    margin: 0 !important;
+    min-width: 3.5rem !important; /* Increased from 3rem to 3.5rem (56px) */
+    width: 3.5rem !important; /* Increased from 3rem to 3.5rem */
+}
+
+/* Ensure gutter wrapper is also transparent */
+.sql-editor-container .CodeMirror .CodeMirror-gutter-wrapper {
+    background: transparent !important;
+    border: none !important;
+}
+
+/* Remove spacing between code lines - Unified Canvas */
+.sql-editor-container .CodeMirror .CodeMirror-line {
+    margin: 0 !important; /* Remove margin between lines */
+    padding: 0 !important; /* Remove padding */
+    padding-left: 0 !important; /* Ensure no extra padding on individual lines */
+    border: none !important; /* Remove any borders */
+    background: transparent !important; /* Transparent background for seamless flow */
+    line-height: 1.5 !important; /* Consistent line height */
+}
+
+/* Ensure code text flows continuously */
+.sql-editor-container .CodeMirror .CodeMirror-line > span {
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    background: transparent !important;
+}
+
+/* CodeMirror pre - remove any default spacing */
+.sql-editor-container .CodeMirror pre {
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    background: transparent !important;
+    font-family: 'Fira Code', 'JetBrains Mono', 'Roboto Mono', 'Courier New', monospace !important;
+    line-height: 1.5 !important;
+}
+
+/* CodeMirror code - ensure seamless flow */
+.sql-editor-container .CodeMirror code {
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    background: transparent !important;
+    font-family: 'Fira Code', 'JetBrains Mono', 'Roboto Mono', 'Courier New', monospace !important;
+}
+
+/* Ensure the entire CodeMirror editor uses monospace */
+.sql-editor-container .CodeMirror * {
+    font-family: 'Fira Code', 'JetBrains Mono', 'Roboto Mono', 'Courier New', monospace !important;
+}
+
+/* CodeMirror lines container - ADD LEFT PADDING to separate from line numbers */
+.sql-editor-container .CodeMirror .CodeMirror-lines {
+    margin: 0 !important;
+    padding: 0 !important;
+    padding-left: 12px !important; /* ADD THIS - separates code from line numbers */
+    padding-bottom: 16px !important; /* Add padding so last line doesn't touch bottom */
+    background: transparent !important;
+}
+
+/* CodeMirror scroll - Only show scrollbars when content exceeds container */
+.sql-editor-container .CodeMirror .CodeMirror-scroll {
+    background: transparent !important;
+    overflow-y: hidden !important; /* Hide by default */
+    overflow-x: hidden !important; /* Hide horizontal (lineWrapping handles this) */
+    max-height: 600px !important; /* Only apply max-height */
+}
+
+/* Show vertical scrollbar only when content exceeds max-height */
+.sql-editor-container .CodeMirror .CodeMirror-scroll.CodeMirror-scroll-vertical {
+    overflow-y: auto !important;
+}
+
+/* CodeMirror focused state - keep transparent */
+.sql-editor-container .CodeMirror.CodeMirror-focused {
+    background: transparent !important;
+}
+
+/* Override any gutter background from dracula theme */
+.sql-editor-container .CodeMirror.cm-s-dracula .CodeMirror-gutters {
+    background: transparent !important;
+    border: none !important;
+}
+
+/* Cursor */
+.sql-editor-container .CodeMirror .CodeMirror-cursor {
+    border-left: 2px solid #ff79c6 !important; /* Neon pink cursor */
+}
+
+/* Selected Text */
+.sql-editor-container .CodeMirror .CodeMirror-selected {
+    background: rgba(189, 147, 249, 0.2) !important; /* Purple selection */
+}
+
+/* Scrollbar - Custom Dark Thin Scrollbar */
+.sql-editor-container .CodeMirror-scroll::-webkit-scrollbar,
+.sql-editor-container .CodeMirror-vscrollbar::-webkit-scrollbar {
+    width: 6px !important;
+    height: 6px !important;
+}
+
+.sql-editor-container .CodeMirror-scroll::-webkit-scrollbar-track,
+.sql-editor-container .CodeMirror-vscrollbar::-webkit-scrollbar-track {
+    background: rgba(15, 23, 42, 0.5) !important;
+    border-radius: 3px;
+}
+
+.sql-editor-container .CodeMirror-scroll::-webkit-scrollbar-thumb,
+.sql-editor-container .CodeMirror-vscrollbar::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.4) !important;
+    border-radius: 3px;
+}
+
+.sql-editor-container .CodeMirror-scroll::-webkit-scrollbar-thumb:hover,
+.sql-editor-container .CodeMirror-vscrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(148, 163, 184, 0.6) !important;
+}
+
+/* Fallback for non-webkit browsers */
+.sql-editor-container .CodeMirror-scrollbar-filler {
+    background: rgba(15, 23, 42, 0.5) !important;
+}
+
+/* Light mode override (if needed) */
+body:not(.dark-mode) .sql-editor-container {
+    background: #0d1117 !important; /* Keep dark theme even in light mode */
+    border-color: rgba(148, 163, 184, 0.3) !important;
+}
+
+body:not(.dark-mode) .sql-editor-container .CodeMirror {
+    background: #0d1117 !important;
+}
+
+/* Pagination Controls */
+.pagination-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-top: 15px;
+    padding: 10px;
+}
+
+.pagination-btn {
+    padding: 6px 12px;
+    background: #5a6fa8;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+
+.pagination-btn:hover:not(:disabled) {
+    background: #4a5f98;
+}
+
+.pagination-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Message Action Buttons */
+.message-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #eee;
+}
+
+.action-btn {
+    padding: 6px 12px;
+    background: #f0f0f0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.2s;
+}
+
+.action-btn:hover {
+    background: #e0e0e0;
+}
+
+.action-btn.active {
+    background: #ffd700;
+    border-color: #ffc700;
+}
+
+.action-btn i {
+    width: 14px;
+    height: 14px;
+}
+
+body.dark-mode .message-actions {
+    border-top-color: #555;
+}
+
+body.dark-mode .action-btn {
+    background: #3a3a3a;
+    border-color: #555;
+    color: #fff;
+}
+
+body.dark-mode .action-btn:hover {
+    background: #4a4a4a;
+}
+
+/* Header Action Buttons */
+.header-actions {
+    display: flex;
+    gap: 10px;
+    margin-left: auto;
+}
+
+.header-action-btn {
+    padding: 8px 16px;
+    background: #5a6fa8;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.2s;
+}
+
+.header-action-btn:hover {
+    background: #4a5f98;
+}
+
+.header-action-btn i {
+    width: 16px;
+    height: 16px;
+}
+
+/* Query Input Wrapper with Suggestions */
+.query-input-wrapper {
+    position: relative;
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+
+/* Templates Modal - Wider to accommodate grid layout */
+#templatesModal .modal-content {
+    max-width: 900px !important; /* Wider for template grid */
+}
+
+/* Templates Modal */
+.templates-list {
+    max-height: 500px;
+    overflow-y: auto;
+    margin: 20px 0;
+}
+
+/* Custom scrollbar for templates list */
+.templates-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+.templates-list::-webkit-scrollbar-track {
+    background: rgba(15, 23, 42, 0.5);
+    border-radius: 4px;
+}
+
+.templates-list::-webkit-scrollbar-thumb {
+    background: #475569;
+    border-radius: 4px;
+}
+
+.templates-list::-webkit-scrollbar-thumb:hover {
+    background: #64748b;
+}
+
+.template-category {
+    margin-bottom: 25px;
+}
+
+.template-category h4 {
+    margin: 0 0 10px 0;
+    color: #38bdf8 !important; /* Cyan to match theme */
+    font-size: 1.1rem;
+}
+
+.template-items {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 15px;
+}
+
+.template-item {
+    border: 1px solid rgba(148, 163, 184, 0.2) !important;
+    border-radius: 6px;
+    padding: 15px;
+    background: rgba(30, 41, 59, 0.6) !important; /* Darker tile */
+    transition: all 0.2s;
+    color: #e2e8f0 !important;
+    margin-bottom: 15px;
+}
+
+.template-item:hover {
+    box-shadow: 0 2px 8px rgba(56, 189, 248, 0.2);
+    transform: translateY(-2px);
+    border-color: rgba(56, 189, 248, 0.4) !important;
+}
+
+.template-name {
+    font-weight: bold;
+    font-size: 1rem;
+    margin-bottom: 5px;
+    color: #38bdf8 !important; /* Cyan headers */
+}
+
+.template-description {
+    font-size: 0.85rem;
+    color: #94a3b8 !important; /* Muted gray text */
+    margin-bottom: 8px;
+}
+
+.template-query {
+    font-size: 0.8rem;
+    color: #94a3b8 !important; /* Muted gray text */
+    font-style: italic;
+    margin-bottom: 10px;
+    padding: 8px;
+    background: rgba(15, 23, 42, 0.5) !important;
+    border-radius: 4px;
+    border-left: 3px solid #38bdf8;
+}
+
+.template-use-btn {
+    width: 100%;
+    padding: 8px;
+    background: linear-gradient(90deg, #0f172a, #1e293b) !important;
+    border: 1px solid #38bdf8 !important;
+    color: #38bdf8 !important;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.3s ease;
+}
+
+.template-use-btn:hover {
+    background: #38bdf8 !important;
+    color: #0f172a !important; /* Black text on Cyan background */
+}
+
+/* Dark mode uses same styles as light mode for templates - already styled above */
+body.dark-mode .template-item {
+    background: rgba(30, 41, 59, 0.6) !important;
+    border-color: rgba(148, 163, 184, 0.2) !important;
+}
+
+body.dark-mode .template-name {
+    color: #38bdf8 !important; /* Cyan headers */
+}
+
+body.dark-mode .template-description {
+    color: #94a3b8 !important; /* Muted gray text */
+}
+
+body.dark-mode .template-query {
+    background: rgba(15, 23, 42, 0.5) !important;
+    color: #94a3b8 !important;
+    border-left-color: #38bdf8 !important;
+}
+
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .header-actions {
+        flex-direction: column;
+        gap: 5px;
+        margin-left: 0;
+        margin-top: 10px;
+    }
+    
+    .header-action-btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .performance-metrics {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .message-actions {
+        flex-direction: column;
+    }
+    
+    .action-btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .template-items {
+        grid-template-columns: 1fr;
+    }
+    
+    .pagination-controls {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .copy-btn, .export-btn {
+        margin: 4px 2px;
+        font-size: 0.7rem;
+        padding: 3px 6px;
+    }
+    
+    .toast-container {
+        left: 10px;
+        right: 10px;
+        top: 10px;
+    }
+    
+    .toast {
+        min-width: auto;
+        max-width: 100%;
+    }
+}
+
+/* Compare View Styles */
+.compare-view-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    padding: 12px;
+    height: calc(100% - 60px);
+    overflow: hidden;
+}
+
+.compare-view-container.hidden {
+    display: none;
+}
+
+.compare-panel {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid rgba(148, 163, 184, 0.2) !important;
+    border-radius: 12px !important;
+    background: rgba(15, 23, 42, 0.6) !important; /* Dark Glass */
+    backdrop-filter: blur(12px) !important;
+    box-shadow: none !important;
+    color: #e2e8f0 !important; /* Light text */
+    overflow: hidden;
+    min-height: 0;
+}
+
+.compare-panel-header {
+    padding: 8px 12px;
+    background: transparent !important;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.2) !important;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #e2e8f0 !important; /* Light text */
+    flex-shrink: 0;
+}
+
+.compare-panel-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px;
+    min-height: 0;
+    background: transparent !important;
+    color: #e2e8f0 !important; /* Light text */
+}
+
+.compare-panel-form {
+    padding: 8px 12px;
+    border-top: 1px solid rgba(148, 163, 184, 0.2) !important;
+    background: transparent !important;
+    flex-shrink: 0;
+}
+
+.compare-query-form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.compare-query-input {
+    width: 100%;
+    padding: 8px;
+    background: transparent !important;
+    border: none !important;
+    border-bottom: 1px solid #38bdf8 !important; /* Cyan underline */
+    border-radius: 0 !important;
+    color: #e2e8f0 !important;
+    font-size: 0.9rem;
+    resize: vertical;
+    min-height: 60px;
+    box-sizing: border-box;
+}
+
+/* Fix the Placeholder text color */
+.compare-panel ::placeholder,
+.compare-query-input::placeholder {
+    color: #64748b !important;
+}
+
+.compare-submit-btn {
+    padding: 8px 16px;
+    background: linear-gradient(180deg, #38bdf8 0%, #2563eb 100%) !important;
+    color: white !important;
+    border: 1px solid #38bdf8 !important;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.3) !important;
+}
+
+.compare-submit-btn:hover:not(:disabled) {
+    background: #38bdf8 !important;
+    box-shadow: 0 0 15px rgba(56, 189, 248, 0.5) !important;
+    transform: translateY(-1px);
+}
+
+.compare-submit-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Responsive: 4 columns on large screens, 2x2 grid on smaller */
+@media (min-width: 1400px) {
+    .compare-view-container {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (min-width: 1000px) and (max-width: 1399px) {
+    .compare-view-container {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Query Statistics Box (Inside the panels) - Transparent */
+.compare-panel .query-stats,
+.compare-panel-content .query-stats,
+.comparison-card .stats-container,
+.compare-panel .stats-container {
+    background: transparent !important;
+    border: 1px solid rgba(148, 163, 184, 0.3) !important;
+    color: #94a3b8 !important; /* Muted gray text */
+    box-shadow: none !important;
+}
+
+/* Ensure text elements inside compare panels use light colors */
+.compare-panel p,
+.compare-panel-content p,
+.compare-panel .message-content,
+.compare-panel-content .message-content {
+    color: #e2e8f0 !important;
+}
+
+/* Custom Scrollbars for Compare Panels */
+.compare-panel::-webkit-scrollbar,
+.compare-panel-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.compare-panel::-webkit-scrollbar-track,
+.compare-panel-content::-webkit-scrollbar-track {
+    background: rgba(15, 23, 42, 0.3);
+}
+
+.compare-panel::-webkit-scrollbar-thumb,
+.compare-panel-content::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.3);
+    border-radius: 3px;
+}
+
+.compare-panel::-webkit-scrollbar-thumb:hover,
+.compare-panel-content::-webkit-scrollbar-thumb:hover {
+    background: rgba(148, 163, 184, 0.5);
+}
+
+/* Dark mode styles for compare view - Now using dark glass theme by default */
+body.dark-mode .compare-panel {
+    background: rgba(15, 23, 42, 0.7) !important; /* Slightly more opaque in dark mode */
+    border-color: rgba(148, 163, 184, 0.3) !important;
+}
+
+body.dark-mode .compare-panel-header {
+    background: transparent !important;
+    border-color: rgba(148, 163, 184, 0.3) !important;
+    color: #e2e8f0 !important;
+}
+
+body.dark-mode .compare-panel-form {
+    background: transparent !important;
+    border-color: rgba(148, 163, 184, 0.3) !important;
+}
+
+body.dark-mode .compare-query-input {
+    background: transparent !important;
+    border-bottom-color: #38bdf8 !important;
+    color: #e2e8f0 !important;
+}
+
+body.dark-mode .compare-query-input::placeholder {
+    color: #64748b !important;
+}
+
+/* ============================================
+   HIGH-SPECIFICITY OVERRIDES FOR API SETTINGS DRAWER
+   ============================================ */
+
+/* FIX COST FONT SIZE - Force small text for cost values */
+.right-panel table tr td:last-child,
+.right-panel table tr td:last-child *,
+.settings-drawer table tr td:last-child,
+.settings-drawer table tr td:last-child *,
+#ai-provider-status table tr td:last-child,
+#ai-provider-status table tr td:last-child *,
+#provider-table tr td:last-child,
+#provider-table tr td:last-child *,
+#provider-table .cost-cell,
+#provider-table .cost-cell * {
+    font-size: 13px !important; /* Force small text */
+    line-height: 1.2 !important;
+    font-weight: normal !important;
+}
+
+/* FIX PROVIDER HEADER ALIGNMENT - Push header text to align with provider names */
+.right-panel table th:first-child,
+.settings-drawer table th:first-child,
+#ai-provider-status table th:first-child,
+#provider-table th:first-child {
+    padding-left: 50px !important; /* Push header text to the right */
+    text-align: left !important;
+}
+
+/* FIX HALO COLOR - Force Cyan color on status indicator */
+.status-halo,
+.api-status-good,
+.provider-radio-button.healthy,
+body.dark-mode .provider-radio-button.healthy {
+    box-shadow: 0 0 8px #00e0ff !important; /* Cyan halo */
+    border-color: #00e0ff !important; /* Cyan border */
+}
+
+/* ============================================
+   FIX TABLE SPACING AND DRAWER POSITIONING
+   ============================================ */
+
+/* 1. Container: Stop scrolling */
+.right-panel .table-responsive,
+.right-panel,
+.settings-drawer .provider-table-wrapper,
+.settings-drawer,
+#ai-provider-status .provider-table-wrapper,
+#ai-provider-status {
+    overflow-x: hidden !important;
+}
+
+/* 2. Table: Force full width and fixed layout */
+.right-panel table,
+.settings-drawer table,
+#ai-provider-status table,
+#provider-table {
+    width: 100% !important;
+    table-layout: fixed !important; /* This is key! */
+    margin-bottom: 0;
+}
+
+/* 3. Column Widths: Manually set them so they fit */
+/* Provider Column (First) */
+.right-panel table th:nth-child(1),
+.right-panel table td:nth-child(1),
+.settings-drawer table th:nth-child(1),
+.settings-drawer table td:nth-child(1),
+#ai-provider-status table th:nth-child(1),
+#ai-provider-status table td:nth-child(1),
+#provider-table th:nth-child(1),
+#provider-table td:nth-child(1) {
+    width: 30% !important; /* Adjust percentage as needed */
+    padding-left: 10px !important; /* Reduce padding to save space */
+}
+
+/* Model Column (Middle) */
+.right-panel table th:nth-child(2),
+.right-panel table td:nth-child(2),
+.settings-drawer table th:nth-child(2),
+.settings-drawer table td:nth-child(2),
+#ai-provider-status table th:nth-child(2),
+#ai-provider-status table td:nth-child(2),
+#provider-table th:nth-child(2),
+#provider-table td:nth-child(2) {
+    width: 45% !important;
+}
+
+/* Cost Column (Last) */
+.right-panel table th:nth-child(3),
+.right-panel table td:nth-child(3),
+.settings-drawer table th:nth-child(3),
+.settings-drawer table td:nth-child(3),
+#ai-provider-status table th:nth-child(3),
+#ai-provider-status table td:nth-child(3),
+#provider-table th:nth-child(3),
+#provider-table td:nth-child(3) {
+    width: 25% !important;
+    text-align: right; /* Right align cost for neatness */
+    padding-right: 10px;
+}
+
+/* Drawer positioning is now handled by flexbox - positioned absolutely within .main-content */
+
+/* ============================================
+   RESPONSIVE DESIGN - SMALL SCREENS
+   ============================================ */
+
+@media (max-width: 900px) {
+    /* If the drawer is open on mobile, make it an overlay */
+    .right-panel,
+    .settings-drawer,
+    #ai-provider-status {
+        width: 100% !important; /* Full width */
+        z-index: 2000 !important; /* On top of everything */
+        border-left: none;
+        background: rgba(15, 23, 42, 0.98) !important; /* Less transparent so text is readable */
+    }
+    
+    /* Ensure the main hub takes full width when drawer is closed/hidden */
+    .query-hub-container,
+    .container,
+    .main-container {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+    
+    /* Adjust main content when drawer is open on mobile */
+    .main-content.drawer-open .container {
+        width: 0 !important; /* Hide main content when drawer is open */
+        max-width: 0 !important;
+        overflow: hidden !important;
+    }
+    
+    /* On small screens, button stays at right edge even when drawer is open (overlay mode) */
+    .drawer-toggle.drawer-open {
+        right: 0 !important;
+        margin-right: 0;
+    }
+}
+
+/* ============================================
+   POWER USER MODE - UI HIDING
+   ============================================ */
+.power-user-hidden {
+    display: none !important;
+}
