@@ -3,7 +3,8 @@
 [![Node.js](https://img.shields.io/badge/Node.js-18.x-green.svg)](https://nodejs.org/)
 [![Express](https://img.shields.io/badge/Express-5.1.0-blue.svg)](https://expressjs.com/)
 [![LangChain](https://img.shields.io/badge/LangChain-1.0.3-orange.svg)](https://www.langchain.com/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
+
 
 A conversational AI agent that lets users explore databases using natural language. SQL Query Buddy converts plain-English questions into accurate, optimized SQL queries, executes them, and provides AI-driven insights on top of the results.
 
