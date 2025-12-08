@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL Query Buddy - Conversational AI</title>
+    <!-- Google Fonts for terminal aesthetic -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <!-- Apply dark mode immediately to prevent flash -->
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.documentElement.classList.add('dark-mode');
+                document.body.classList.add('dark-mode');
+            }
+        })();
+    </script>
+    <!-- Feather Icons -->
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+</head>
+
+<body>
+    <div class="page-wrapper">
+        <div class="app-header">
+            <div class="header-content">
+                <div class="header-text">
+                    <img src="images/header-logo-main.png" alt="SQL Query Buddy - Your conversational AI for smart data insights" class="header-logo" />
+                </div>
+                <button id="darkModeToggle" class="dark-mode-toggle" title="Toggle Dark Mode">
+                    <i data-feather="moon"></i>
+                </button>
+            </div>
+        </div>
+        <div class="main-content">
+            <div class="main-container">
+                <div class="container">
+                    <header>
+                        <div class="header-center">
+                            <!-- Left side: Templates button + Provider Stats -->
+                            <div class="left-controls">
+                                <button id="templates-btn" class="templates-btn-left" title="Query Templates">
+                                    <i data-feather="file-text"></i>
+                                    <span>Templates</span>
+                                </button>
+                                <div class="provider-model-row">
+                                    <div class="provider-model-item">
+                                        <span class="provider-model-label">PROVIDER:</span>
+                                        <span id="header-provider" class="provider-model-value">Not selected</span>
+                                    </div>
+                                    <div class="provider-model-item">
+                                        <span class="provider-model-label">MODEL:</span>
+                                        <span id="header-model" class="provider-model-value">Not selected</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Right side: Title + Instructions -->
+                            <div class="header-title-area">
+                                <h1>Multi-Session AI Query Hub</h1>
+                                <p id="header-subtitle">Enter your Data Query and optionally select Provider and AI Model</p>
+                            </div>
+                        </div>
+                    </header>
+
+                    <div class="tabs-and-button-row">
+                        <div id="query-tabs" class="query-tabs">
+                            <div class="tab active" data-tab-id="main">
+                                <span class="tab-title">New Query</span>
+                            </div>
+                        </div>
+                        <button id="compare-mode-btn" class="compare-mode-btn" style="display: none;">
+                            <i data-feather="columns"></i>
+                            <span>Compare Mode</span>
+                        </button>
+                    </div>
+                    <div id="reset-message" class="reset-message hidden">
+                        Queries in this tab start new context
+                    </div>
+                    <div id="chat-container">
+                        <!-- Chat messages will be appended here -->
+                    </div>
+                    <div id="compare-view-container" class="compare-view-container hidden">
+                        <!-- Compare mode panels will be rendered here -->
+                    </div>
+        <div id="progress-container" class="hidden">
+            <div id="progress-bar-wrapper">
+                <div id="progress-bar"></div>
+                <div id="progress-bar-percentage">0%</div>
+            </div>
+            <div id="progress-status-message"></div>
+        </div>
+        <!-- Toast Notification Container -->
+        <div id="toast-container" class="toast-container"></div>
+                    <form id="query-form">
+                        <textarea id="query-input" name="query-input"
+                            placeholder="Ask a question... (Enter to send, Shift+Enter for new line)"
+                            spellcheck="false"
+                            autocomplete="off"
+                            autocorrect="off"
+                            autocapitalize="off"
+                            required></textarea>
+                        <button type="submit">Submit</button>
+                    </form>
+                </div>
+            </div>
+            <div class="settings-drawer" id="ai-provider-status">
+                <div class="provider-header-row">
+                    <p class="provider-instruction">Update provider with click or model with dropdown</p>
+                </div>
+                <div class="provider-table-wrapper">
+                    <table id="provider-table">
+                        <thead>
+                            <tr>
+                                <th>Provider</th>
+                                <th>Model</th>
+                                <th class="provider-table-header-center">Cost</th>
+                            </tr>
+                        </thead>
+                        <tbody id="provider-table-body">
+                            <!-- Provider rows will be rendered here by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <footer class="app-footer" id="main-footer">
+            <div class="footer-container">
+                <button id="footer-toggle-btn" class="footer-toggle-btn" title="About">
+                    <img id="footer-toggle-icon" src="images/about.jpg" alt="About" class="footer-toggle-icon-img">
+                </button>
+                <div class="footer-main" id="footer-main-content">
+                    <div class="footer-section footer-brand">
+                        <h3 class="footer-logo">SQL Query Buddy</h3>
+                        <p class="footer-description">
+                            A conversational AI tool that converts natural language into SQL queries using RAG technology. It maintains conversation context for follow-ups, provides AI-driven insights, automatic data visualization, and supports multiple AI providers in a modern dark-mode interface.
+                        </p>
+                    </div>
+
+                    <div class="footer-section footer-tech">
+                        <h4 class="footer-heading">Built With</h4>
+                        <ul class="footer-list footer-tech-list">
+                            <li>
+                                <a href="https://nodejs.org/" target="_blank" rel="noopener noreferrer" class="tech-link" aria-label="Node.js">
+                                    <svg class="tech-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-2.524 19.5c-.297 0-.577-.09-.813-.26l-1.5-.87c-.236-.17-.383-.42-.383-.69v-1.74c0-.27.147-.52.383-.69l1.5-.87c.236-.17.516-.26.813-.26s.577.09.813.26l1.5.87c.236.17.383.42.383.69v1.74c0 .27-.147.52-.383.69l-1.5.87c-.236.17-.516.26-.813.26zm0-5.22c-.297 0-.577-.09-.813-.26l-1.5-.87c-.236-.17-.383-.42-.383-.69V10.78c0-.27.147-.52.383-.69l1.5-.87c.236-.17.516-.26.813-.26s.577.09.813.26l1.5.87c.236.17.383.42.383.69v1.74c0 .27-.147.52-.383.69l-1.5.87c-.236.17-.516.26-.813.26zm5.048 2.61c-.297 0-.577-.09-.813-.26l-1.5-.87c-.236-.17-.383-.42-.383-.69v-1.74c0-.27.147-.52.383-.69l1.5-.87c.236-.17.516-.26.813-.26s.577.09.813.26l1.5.87c.236.17.383.42.383.69v1.74c0 .27-.147.52-.383.69l-1.5.87c-.236.17-.516.26-.813.26zm0-5.22c-.297 0-.577-.09-.813-.26l-1.5-.87c-.236-.17-.383-.42-.383-.69V8.17c0-.27.147-.52.383-.69l1.5-.87c.236-.17.516-.26.813-.26s.577.09.813.26l1.5.87c.236.17.383.42.383.69v1.74c0 .27-.147.52-.383.69l-1.5.87c-.236.17-.516.26-.813.26z"/>
+                                    </svg>
+                                    <span>Node.js & Express</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://js.langchain.com/" target="_blank" rel="noopener noreferrer" class="tech-link" aria-label="LangChain">
+                                    <svg class="tech-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                                    </svg>
+                                    <span>LangChain & FAISS</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://developer.mozilla.org/en-US/docs/Web/HTML" target="_blank" rel="noopener noreferrer" class="tech-link" aria-label="HTML5">
+                                    <svg class="tech-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 18l-8.5 5L3 16.77V7.23L3.5 7 12 12l8.5-5L21 7.23v9.54L20.5 17 12 18zm-10.24-2.73L11 13.36l8.24 1.91L12 19.1l-10.24-3.83zm19.48-8.54L13 10.64 4.76 8.73 12 4.9l10.24 3.83zM3.5 7l17-10L21 1l-17 10L3.5 7z"/>
+                                    </svg>
+                                    <span>HTML5</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://developer.mozilla.org/en-US/docs/Web/CSS" target="_blank" rel="noopener noreferrer" class="tech-link" aria-label="CSS3">
+                                    <svg class="tech-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M2.5 0L1.75 4.5h14.5L15.5 0H2.5zm1.75 6L3.5 10.5h12L14.25 6H4.25zm1.75 6L5.25 18h9L12.5 12H6z"/>
+                                    </svg>
+                                    <span>CSS3</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank" rel="noopener noreferrer" class="tech-link" aria-label="JavaScript">
+                                    <svg class="tech-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M0 0h24v24H0V0zm22.034 18.276c-.175-1.095-.888-2.015-3.003-2.873-.736-.345-1.554-.585-1.797-1.14-.091-.33-.105-.51-.046-.705.15-.646.915-.84 1.515-.66.39.12.75.42.976.9 1.034-.676 1.034-.676 1.755-1.125-.27-.42-.404-.601-.586-.78-.63-.705-1.469-1.065-2.834-1.034l-.705.09c-.676.165-1.32.525-1.71 1.005-1.14 1.291-.81 3.541.57 4.471 1.365 1.02 3.361 1.244 3.616 2.205.24 1.17-.87 1.545-1.966 1.41-.811-.18-1.26-.586-1.755-1.336l-1.83 1.051c.21.48.45.689.81 1.109 1.74 1.756 6.09 1.666 6.871-1.004.029-.09.24-.705.074-1.65l.046.067zm-8.983-7.245h-2.248c0 1.938-.009 3.864-.009 5.805 0 1.232.063 2.363-.138 2.711-.33.689-1.18.601-1.566.48-.396-.196-.597-.466-.83-.855-.063-.105-.11-.196-.127-.196l-1.825 1.125c.305.63.75 1.172 1.324 1.517.855.51 2.004.675 3.207.405.783-.226 1.365-.585 1.946-1.244.024-.21.044-.42.062-.63.147-1.08.145-2.06.145-3.204 0-2.055 0-4.109.015-6.179l.004-.056z"/>
+                                    </svg>
+                                    <span>JavaScript (ES6+)</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://www.sqlite.org/" target="_blank" rel="noopener noreferrer" class="tech-link" aria-label="SQLite">
+                                    <svg class="tech-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M4 4h16v16H4V4zm2 2v12h12V6H6zm2 2h8v2H8V8zm0 4h8v2H8v-2zm0 4h5v2H8v-2z"/>
+                                    </svg>
+                                    <span>SQLite Database</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://www.chartjs.org/" target="_blank" rel="noopener noreferrer" class="tech-link" aria-label="Chart.js">
+                                    <svg class="tech-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M3 3v18h18v-2H5V3H3zm16 14.59L18.59 16 16 18.59 13.41 16 11 18.41 8.59 16 6 18.59 3.41 16 5 14.41 7.59 12 5 9.41 3.41 8 6 5.41 8.59 8 11 5.59 13.41 8 16 5.41 18.59 8 21 5.41v12.18z"/>
+                                    </svg>
+                                    <span>Chart.js & CodeMirror</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://helmetjs.github.io/" target="_blank" rel="noopener noreferrer" class="tech-link" aria-label="Security">
+                                    <svg class="tech-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/>
+                                    </svg>
+                                    <span>Helmet & Security</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://openai.com/" target="_blank" rel="noopener noreferrer" class="tech-link" aria-label="AI API Providers">
+                                    <svg class="tech-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                                    </svg>
+                                    <span>AI APIs: OpenAI, Cohere, AI21, Gemini</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="footer-section footer-links">
+                        <h4 class="footer-heading">Quick Links</h4>
+                        <ul class="footer-list">
+                            <li>
+                                <a href="https://github.com/jorgenyc/sql-query-buddy/blob/main/docs/DOCUMENTATION.md" target="_blank"
+                                    rel="noopener noreferrer">
+                                    Documentation
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://github.com/jorgenyc/sql-query-buddy/blob/main/docs/FEATURES.md" target="_blank"
+                                    rel="noopener noreferrer">
+                                    Features
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://github.com/jorgenyc/sql-query-buddy/blob/main/docs/INSTALLATION_GUIDE.md" target="_blank"
+                                    rel="noopener noreferrer">
+                                    Installation Guide
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://github.com/jorgenyc/sql-query-buddy/issues/new" target="_blank"
+                                    rel="noopener noreferrer">
+                                    Report Issues
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="footer-section footer-connect">
+                        <h4 class="footer-heading">Connect</h4>
+                        <div class="footer-social-links">
+                            <a href="https://github.com/jorgenyc/sql-query-buddy" target="_blank"
+                                rel="noopener noreferrer" aria-label="GitHub Repository" class="social-link">
+                                <svg class="social-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                    fill="currentColor">
+                                    <path
+                                        d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297 24 5.67 18.627.297 12 .297z" />
+                                </svg>
+                                <span class="social-label">GitHub</span>
+                            </a>
+                            <a href="https://www.linkedin.com/in/jorgenyc" target="_blank" rel="noopener noreferrer"
+                                aria-label="LinkedIn Profile" class="social-link">
+                                <svg class="social-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                    fill="currentColor">
+                                    <path
+                                        d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.766c.721-1.124 2.685-1.766 3.5-1.766 4.001 0 5 2.731 5 6.236v6.764z" />
+                                </svg>
+                                <span class="social-label">LinkedIn</span>
+                            </a>
+                        </div>
+                        <p class="footer-bootcamp">
+                            Created for Codecademy's<br>
+                            <strong>GenAI & Agents Bootcamp</strong>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="footer-bottom">
+                    <div class="footer-bottom-content">
+                        <p class="footer-copyright">
+                            &copy; <span id="footer-year">2025</span> SQL Query Buddy
+                        </p>
+                        <p class="footer-license">
+                            Licensed under the
+                            <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank"
+                                rel="noopener noreferrer" class="footer-license-link">
+                                Apache License 2.0
+                            </a>
+                        </p>
+                        <p class="footer-version">
+                            Version 1.0  |  Powered by AI
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+    <!-- API Key Configuration Modal -->
+    <div id="apiKeyModal" class="modal">
+        <div class="modal-content">
+            <h2>Configure API Key</h2>
+            <p id="modalProviderName" class="modal-provider"></p>
+            <form id="apiKeyForm">
+                <div class="form-group">
+                    <label for="apiKeyInput" id="apiKeyInputLabel">API Key:</label>
+                    <input type="text" id="apiKeyInput" name="apiKeyInput" placeholder="Enter your API key" required autocomplete="off">
+                    <small class="help-text">Your API key will be saved securely to the .env file</small>
+                </div>
+                <div class="modal-buttons">
+                    <button type="submit" id="modalOkBtn" class="btn-primary" disabled>OK</button>
+                    <button type="button" id="modalCancelBtn" class="btn-secondary">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Onboarding Modal -->
+    <div id="onboardingModal" class="modal">
+        <div class="modal-content">
+            <h2>Welcome to SQL Query Buddy!</h2>
+            <p>To get started, you need to configure an API key for a provider.</p>
+            <p>Here are some recommended providers:</p>
+            <ul>
+                <li>Google (Free tier available)</li>
+                <li>Groq (Free tier available)</li>
+                <li>OpenAI</li>
+            </ul>
+            <div class="modal-buttons">
+                <button type="button" id="onboardingConfigureBtn" class="btn-primary">Configure API Key</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Query Templates Modal -->
+    <div id="templatesModal" class="modal">
+        <div class="modal-content">
+            <h2>Query Templates</h2>
+            <p>Select a template to get started quickly:</p>
+            <div id="templates-list" class="templates-list">
+                <!-- Templates will be populated by JavaScript -->
+            </div>
+            <div class="modal-buttons">
+                <button type="button" id="templatesCloseBtn" class="btn-secondary">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Provider Actions Modal (for currently selected provider) -->
+    <div id="providerActionsModal" class="modal">
+        <div class="modal-content">
+            <h2 style="text-align: center;">API Testing and Update</h2>
+            <p id="actionsModalProviderName" class="modal-provider" style="text-align: center;"></p>
+            <p id="actionsModalDescription" class="modal-description">This provider is currently selected. What would
+                you like to do?</p>
+            <div id="actionsModalButtons" class="modal-buttons-vertical">
+                <button type="button" id="testApiBtn" class="btn-action">Test API</button>
+                <button type="button" id="enterNewApiBtn" class="btn-action">Enter New API Key</button>
+                <button type="button" id="deleteApiKeyBtn" class="btn-action btn-danger">Delete API Key</button>
+                <button type="button" id="actionsCancelBtn" class="btn-secondary">Cancel</button>
+            </div>
+            <div id="actionsModalResult" style="display: none; text-align: center; margin-top: 20px;">
+                <div id="actionsModalResultMessage" style="padding: 15px; border-radius: 5px; margin-bottom: 15px;">
+                </div>
+                <div id="actionsModalResultButtons" class="modal-buttons">
+                    <button type="button" id="actionsModalOkBtn" class="btn-primary">OK</button>
+                    <button type="button" id="actionsModalCancelBtn" class="btn-secondary"
+                        style="display: none;">Cancel</button>
+                </div>
+            </div>
+            <div id="actionsModalConfirm" style="display: none; text-align: center; margin-top: 20px;">
+                <div style="padding: 15px; margin-bottom: 15px;">
+                    <p style="color: #888; font-size: 1.1em; margin: 0;">Would you like to change the currently
+                        configured Key?</p>
+                </div>
+                <div class="modal-buttons">
+                    <button type="button" id="actionsModalYesBtn" class="btn-primary">Yes</button>
+                    <button type="button" id="actionsModalNoBtn" class="btn-secondary">No</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button class="drawer-toggle" id="api-config-toggle-btn" title="Show API Configuration">
+        <img src="images/ai_settings.svg" alt="AI Settings" class="drawer-toggle-icon">
+    </button>
+
+    <script>
+        // Automatically update copyright year
+        document.getElementById('footer-year').textContent = new Date().getFullYear();
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@2.3.3/dist/purify.min.js"></script>
+    <!-- Marked.js for markdown parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- Chart.js for data visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <!-- React and ReactDOM (updated to React 18) -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <!-- Simple SVG-based US Map - No React dependencies needed -->
+    <script src="SimpleUSMap.js"></script>
+    <!-- CodeMirror for SQL syntax highlighting -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.65.2/lib/codemirror.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.65.2/theme/dracula.css">
+    <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.2/lib/codemirror.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.2/mode/sql/sql.js"></script>
+    <script src="script.js" defer></script>
+    <script>
+        // Footer collapse/expand functionality - runs after all scripts load
+        window.addEventListener('load', function() {
+            let isMinimized = true; // Default to minimized on load
+            const footer = document.getElementById('main-footer');
+            const footerMain = document.getElementById('footer-main-content');
+            const toggleBtn = document.getElementById('footer-toggle-btn');
+            const toggleIcon = document.getElementById('footer-toggle-icon');
+            const pageWrapper = document.querySelector('.page-wrapper');
+            
+            // Set initial state on page-wrapper
+            if (pageWrapper && isMinimized) {
+                pageWrapper.classList.add('footer-minimized');
+            }
+            
+            function updateFooterState() {
+                const pageWrapper = document.querySelector('.page-wrapper');
+                if (isMinimized) {
+                    footer.classList.add('footer-minimized');
+                    footerMain.style.display = 'none';
+                    if (pageWrapper) pageWrapper.classList.add('footer-minimized');
+                } else {
+                    footer.classList.remove('footer-minimized');
+                    footerMain.style.display = 'grid';
+                    if (pageWrapper) pageWrapper.classList.remove('footer-minimized');
+                }
+            }
+            
+            function updateButtonIcon() {
+                // Immediately update icon and tooltip based on current state (before animation)
+                if (toggleIcon) {
+                    if (isMinimized) {
+                        toggleIcon.src = 'images/about.jpg'; // About icon when minimized (to expand)
+                    } else {
+                        toggleIcon.src = 'images/minimize.jpg'; // Minimize icon when expanded (to minimize)
+                    }
+                }
+                // Update tooltip text
+                if (toggleBtn) {
+                    toggleBtn.title = isMinimized ? 'About' : 'Minimize';
+                }
+            }
+            
+            function toggleFooter() {
+                // Toggle state
+                isMinimized = !isMinimized;
+                
+                // Immediately update the button icon synchronously (before animation)
+                updateButtonIcon();
+                
+                // Force a synchronous reflow to ensure icon is updated before CSS transition
+                if (toggleIcon) {
+                    toggleIcon.offsetHeight; // Force reflow
+                }
+                
+                // Update footer state (triggers CSS transition)
+                updateFooterState();
+            }
+            
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', toggleFooter);
+            }
+            
+            // Initialize footer state and button icon on load
+            updateButtonIcon();
+            updateFooterState();
+        });
+    </script>
+</body>
+
+</html>
